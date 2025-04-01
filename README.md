@@ -39,3 +39,12 @@ You can include this project as a crate by adding it in your Cargo.toml file
 
 # Editing your own
 You can add an example to build directly from this repository by creating or modifying a file in the examples directory.
+
+to start your own project with minimal configuration, download this repository with 'git clone https://github.com/Jmlannan/Kywy-Rust/' you can then add a new example in the examples directory. Build it with the command above in build examples.
+
+You can also add this to your own project with the following in your Cargo.toml file:
+```toml
+[dependencies]
+kywy = { git = "https://github.com/Jmlannan/Kywy-Rust/" }
+```
+however, this library is currently unstable and may not work as expected.
