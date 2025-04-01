@@ -18,7 +18,7 @@ To do:
 - [ ] Add support for qwiic devices
 - [ ] Add support for SPI "backpack" devices
 - [ ] Add more documentation
-- [ ] Add more examples
+- [ ] Add more examples/games
 
 
 # Build examples
