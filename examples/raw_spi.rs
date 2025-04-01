@@ -1,3 +1,5 @@
+//! This example shows sending raw spi commands using the kywy spi interface (same as display)
+
 #![no_std]
 #![no_main]
 

@@ -1,5 +1,5 @@
 //! Hello World example for Kywy display
-//! Status: Not Working (likely due to display.rs)
+
 #![no_std]
 #![no_main]
 
@@ -23,12 +23,14 @@ async fn main(_spawner: embassy_executor::Spawner) {
     let mut display = KywyDisplay::new().await;
     display.initialize().await; // This handles display enable/clear sequence
     display.enable(); // make sure display is turned on
-    // Initial display test pattern
-    display.clear_buffer(BinaryColor::On); // White background
+
+    // Black Screen
+    display.clear_buffer(BinaryColor::Off); // Clear buffer to black
     display.write_display().await;
     Timer::after(Duration::from_millis(1000)).await;
 
-    display.clear_buffer(BinaryColor::Off); // Black background
+    // White Screen
+    display.clear_buffer(BinaryColor::On); // Clear buffer to white
     display.write_display().await;
     Timer::after(Duration::from_millis(1000)).await;
 
@@ -48,9 +50,9 @@ async fn main(_spawner: embassy_executor::Spawner) {
         }
     }
     display.write_display().await;
-    Timer::after(Duration::from_millis(5000)).await;
+    Timer::after(Duration::from_millis(1000)).await;
 
-    // Draw text
+    // Write Hello, Rust! to display using the embedded-graphics crate
     display.clear_buffer(BinaryColor::On); // Clear to white background
     let style = MonoTextStyle::new(&FONT_6X10, BinaryColor::Off); // Black text
 
