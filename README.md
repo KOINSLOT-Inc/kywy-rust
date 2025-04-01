@@ -34,8 +34,8 @@ you can install elf2uf2-rs by running:
 
 UF2 file will then be in the directory 'target/thumbv6m-none-eabi/release/examples/'
 
-#Including as a crate
+# Including as a crate
 You can include this project as a crate by adding it in your Cargo.toml file
 
-#Editing your own
+# Editing your own
 You can add an example to build directly from this repository by creating or modifying a file in the examples directory.
