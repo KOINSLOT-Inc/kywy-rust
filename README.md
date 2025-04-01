@@ -32,7 +32,7 @@ To convert to a UF2 file run:
 you can install elf2uf2-rs by running:
 `cargo install elf2uf2-rs`
 
-UF2 file will them be in the directory target/thumbv6m-none-eabi/release/examples/
+UF2 file will then be in the directory 'target/thumbv6m-none-eabi/release/examples/'
 
 #Including as a crate
 You can include this project as a crate by adding it in your Cargo.toml file
