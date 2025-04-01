@@ -9,7 +9,7 @@ This is an rust library for building out rust programs on the Kywy device. You c
 This is a work in progress and is not yet ready for use.
 
 To do:
-- [X] Implement display driver
+- [X] Implement display driver (LS013B7DH05)
 - [ ] Implement button interface
 - [ ] Implement SD-card interface
 - [ ] Implement USB debug interface
