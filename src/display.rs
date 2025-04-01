@@ -1,4 +1,6 @@
-//! Status: No display output
+//! Status: Working
+//!  Potential to do:
+//!    - Increase buffer size to send more lines to the DMA at a time
 //! The purpose of this library is to create a driver interface for the sharp memory display
 //!
 //! Display is a 144x168 pixel monochrome display (LS013B7DH05)
@@ -29,9 +31,7 @@
 //! CS: Chip select, active high,
 //! Display pin: Active high, low to disable, does not clear display, can be used or blanking. Wired to be pulled low at startup so display can be cleared to remove random data.
 //! Command bit is reset after CS goes low
-//! Line Address:
-//!
-//!
+
 use core::ops::Not;
 use embassy_rp::gpio::{Level, Output};
 use embassy_rp::peripherals::SPI0;
@@ -50,9 +50,6 @@ const HEIGHT: usize = 168;
 const TOTAL_BUFFER_SIZE: usize = WIDTH * HEIGHT / 8; // buffer that only holds 1-bit pixel data
 const BYTES_PER_LINE: usize = WIDTH / 8; // 144 bits / 8
 const LINE_PACKET_SIZE: usize = 2 + BYTES_PER_LINE + 2; // Size of the SPI command buffer for updating a line: command + address + data + dummy
-
-// Compile-time assertion to check buffer size for DH05 display
-// const _: () = assert!(TOTAL_SPI_FRAME_BUFFER_SIZE == 3529);
 
 // Command definitions
 #[derive(Clone, Copy, PartialEq, Eq)]
