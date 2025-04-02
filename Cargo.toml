@@ -33,6 +33,9 @@ embassy-rp = { git = "https://github.com/embassy-rs/embassy", rev = "3bc809e", f
     "rp2040",
 ] }
 embedded-hal = "1.0.0"
+embassy-futures = { git = "https://github.com/embassy-rs/embassy", rev = "3bc809e", features = [
+    "defmt",
+] }
 
 # Display and bit manipulation
 bitvec = { version = "1.0", default-features = false }

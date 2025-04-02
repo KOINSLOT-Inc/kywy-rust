@@ -1,3 +1,5 @@
+//! examples/button_test.rs: Example to test button library on the Kywy board.
+
 #![no_std]
 #![no_main]
 
@@ -5,7 +7,8 @@ use defmt::*;
 use defmt_rtt as _;
 use panic_probe as _;
 
-use kywy::{kywy_buttons_from, kywy_display_from};
+use kywy::buttons::{ButtonEvent, ButtonId, ButtonState};
+use kywy::{kywy_buttons_from, kywy_display_from}; // <- bring in your event types
 
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
@@ -22,7 +25,7 @@ async fn main(spawner: Spawner) {
     info!("Button test example started");
     let p = embassy_rp::init(Default::default());
 
-    // Initialize display and write hello message
+    // Initialize display
     info!("Initializing display");
     kywy_display_from!(p => display);
     let style = MonoTextStyle::new(&FONT_6X10, BinaryColor::Off);
@@ -31,45 +34,41 @@ async fn main(spawner: Spawner) {
     display.clear_buffer(BinaryColor::On);
     write_message(&mut display, "Button Test Started", style);
     display.write_display().await;
-    info!("Display initialized");
 
     // Initialize buttons
     info!("Initializing buttons");
-    kywy_buttons_from!(&spawner, p => buttons);
+    kywy_buttons_from!(&spawner, p => button_channel);
     info!("Buttons initialized");
 
-    // Send message to display
     display.clear(BinaryColor::Off).ok();
     write_message(&mut display, "Buttons Initialized", style);
     display.write_display().await;
 
     loop {
-        info!("Start of main loop");
-        if !buttons.left.wait().await {
-            info!("Left pressed");
-            write_message(&mut display, "Left Pressed", style);
-        } else if !buttons.right.wait().await {
-            info!("Right pressed");
-            write_message(&mut display, "Right Pressed", style);
-        } else if !buttons.dup.wait().await {
-            info!("Up pressed");
-            write_message(&mut display, "Up Pressed", style);
-        } else if !buttons.ddown.wait().await {
-            info!("Down pressed");
-            write_message(&mut display, "Down Pressed", style);
-        } else if !buttons.dleft.wait().await {
-            info!("Left D-pad");
-            write_message(&mut display, "D-Left Pressed", style);
-        } else if !buttons.dright.wait().await {
-            info!("Right D-pad");
-            write_message(&mut display, "D-Right Pressed", style);
-        } else if !buttons.dcenter.wait().await {
-            info!("Center pressed");
-            write_message(&mut display, "Center Pressed", style);
-        }
+        let event: ButtonEvent = button_channel.receive().await;
 
+        let msg = match (event.id, event.state) {
+            (ButtonId::Left, ButtonState::Pressed) => "Left Pressed",
+            (ButtonId::Left, ButtonState::Released) => "Left Released",
+            (ButtonId::Right, ButtonState::Pressed) => "Right Pressed",
+            (ButtonId::Right, ButtonState::Released) => "Right Released",
+            (ButtonId::DUp, ButtonState::Pressed) => "D-Up Pressed",
+            (ButtonId::DUp, ButtonState::Released) => "D-Up Released",
+            (ButtonId::DDown, ButtonState::Pressed) => "D-Down Pressed",
+            (ButtonId::DDown, ButtonState::Released) => "D-Down Released",
+            (ButtonId::DLeft, ButtonState::Pressed) => "D-Left Pressed",
+            (ButtonId::DLeft, ButtonState::Released) => "D-Left Released",
+            (ButtonId::DRight, ButtonState::Pressed) => "D-Right Pressed",
+            (ButtonId::DRight, ButtonState::Released) => "D-Right Released",
+            (ButtonId::DCenter, ButtonState::Pressed) => "D-Center Pressed",
+            (ButtonId::DCenter, ButtonState::Released) => "D-Center Released",
+        };
+
+        info!("{}", msg);
+        write_message(&mut display, msg, style);
         display.write_display().await;
-        Timer::after(Duration::from_millis(300)).await;
+
+        Timer::after(Duration::from_millis(100)).await;
     }
 }
 
