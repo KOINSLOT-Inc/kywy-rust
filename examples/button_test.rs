@@ -9,7 +9,7 @@ use defmt_rtt as _;
 use panic_probe as _;
 
 use kywy::buttons::{ButtonEvent, ButtonId, ButtonState};
-use kywy::{kywy_buttons_from, kywy_display_from}; // <- bring in your event types
+use kywy::{kywy_buttons_from, kywy_display_from}; // Import the macros
 
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
