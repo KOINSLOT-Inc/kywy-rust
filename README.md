@@ -10,7 +10,7 @@ This is a work in progress and is not yet ready for use.
 
 To do:
 - [X] Implement display driver (LS013B7DH05)
-- [ ] Implement button interface (Started, partially working)
+- [X] Implement button interface (See examples/button_tests.rs)
 - [X] Macros for display/buttons setup
 - [ ] Implement battery interface
 - [ ] Implement SD-card interface

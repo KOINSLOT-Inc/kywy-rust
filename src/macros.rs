@@ -61,8 +61,8 @@ macro_rules! kywy_buttons_from {
     ($spawner:expr, $peripherals:ident => $var:ident) => {
         let mut $var = $crate::buttons::init(
             $spawner,
-            $peripherals.PIN_2,  // Button: Left
             $peripherals.PIN_12, // Button: Right
+            $peripherals.PIN_2,  // Button: Left
             $peripherals.PIN_9,  // Button: DUp
             $peripherals.PIN_3,  // Button: DDown
             $peripherals.PIN_6,  // Button: DLeft
