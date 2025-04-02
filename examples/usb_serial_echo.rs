@@ -1,5 +1,4 @@
 //! Embassy example USB interface
-//! Status: Working
 
 //! This example shows how to use USB (Universal Serial Bus) in the RP2040 chip.
 //!

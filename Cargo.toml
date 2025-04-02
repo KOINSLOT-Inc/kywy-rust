@@ -18,17 +18,20 @@ defmt-rtt = "0.4"
 panic-probe = { version = "0.3", features = ["print-defmt"] }
 
 # Embassy framework (async embedded)
-embassy-executor = { version = "0.6", features = [
+embassy-executor = { git = "https://github.com/embassy-rs/embassy", rev = "3bc809e", features = [
     "arch-cortex-m",
     "executor-thread",
     "defmt",
-    "integrated-timers",
 ] }
-embassy-time = { version = "0.3", features = [
+embassy-time = { git = "https://github.com/embassy-rs/embassy", rev = "3bc809e", features = [
     "defmt",
     "defmt-timestamp-uptime",
 ] }
-embassy-rp = { version = "0.2", features = ["defmt", "time-driver"] }
+embassy-rp = { git = "https://github.com/embassy-rs/embassy", rev = "3bc809e", features = [
+    "defmt",
+    "time-driver",
+    "rp2040",
+] }
 embedded-hal = "1.0.0"
 
 # Display and bit manipulation
@@ -36,8 +39,10 @@ bitvec = { version = "1.0", default-features = false }
 embedded-graphics = "0.8.1"
 
 # Usb Serial interface for debugging
-embassy-sync = { version = "0.5", features = ["defmt"] }
-embassy-usb = { version = "0.4.0", default-features = false, features = [
+embassy-sync = { git = "https://github.com/embassy-rs/embassy", rev = "3bc809e", features = [
+    "defmt",
+] }
+embassy-usb = { git = "https://github.com/embassy-rs/embassy", rev = "3bc809e", default-features = false, features = [
     "defmt",
 ] }
 static_cell = "1.2.0"
