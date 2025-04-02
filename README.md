@@ -5,13 +5,20 @@ Kywy is a small, low-cost, low-power, open-source, microcontroller board with a 
 
 This is an rust library for building out rust programs on the Kywy device. You can also find the C++ library at https://github.com/KOINSLOT-Inc/kywy.
 
+# Features
+ - Display driver
+    - Supports embedded graphics library
+    - Supports text rendering (examples/hello_world.rs)
+    - Supports image rendering (examples/display_image.rs)
+ - Button interface
+    - Async message queue or polling support (examples/button_test_async.rs and examples/button_test_polling.rs)
+
 # Still in progress
-This is a work in progress and is not yet ready for use.
+This is a work in progress.
 
 To do:
 - [X] Implement display driver (LS013B7DH05)
 - [X] Implement button interface (See examples/button_tests.rs)
-- [X] Macros for display/buttons setup
 - [ ] Implement battery interface
 - [ ] Implement SD-card interface
 - [ ] Implement USB debug interface
