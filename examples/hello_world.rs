@@ -2,7 +2,6 @@
 
 #![no_std]
 #![no_main]
-
 use defmt::*;
 use defmt_rtt as _;
 use embassy_executor;
@@ -13,14 +12,16 @@ use embedded_graphics::{
     prelude::*,
     text::Text,
 };
-use kywy::display::KywyDisplay;
+use kywy::kywy_display_from;
 use panic_probe as _;
 
 #[embassy_executor::main]
 async fn main(_spawner: embassy_executor::Spawner) {
     info!("Starting Kywy Hello World display!");
 
-    let mut display = KywyDisplay::new().await;
+    let p = embassy_rp::init(Default::default());
+    kywy_display_from!(p => display);
+
     display.initialize().await; // This handles display enable/clear sequence
     display.enable(); // make sure display is turned on
 

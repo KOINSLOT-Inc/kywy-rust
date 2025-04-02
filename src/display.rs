@@ -33,8 +33,10 @@
 //! Command bit is reset after CS goes low
 
 use core::ops::Not;
+use embassy_rp::Peri;
 use embassy_rp::gpio::{Level, Output};
 use embassy_rp::peripherals::SPI0;
+use embassy_rp::peripherals::*;
 use embassy_rp::spi::{Config as SpiConfig, Phase, Polarity, Spi};
 use embedded_graphics::{
     Pixel,
@@ -85,29 +87,25 @@ pub struct KywyDisplay<'a> {
 }
 
 impl<'a> KywyDisplay<'a> {
-    pub async fn new() -> Self {
-        let p = embassy_rp::init(Default::default());
-
-        let mosi = p.PIN_19;
-        let miso = p.PIN_16;
-
+    pub async fn new(
+        spi: Peri<'static, SPI0>,
+        dma_tx: Peri<'static, DMA_CH0>,
+        dma_rx: Peri<'static, DMA_CH1>,
+        sck: Peri<'static, PIN_18>,
+        mosi: Peri<'static, PIN_19>,
+        miso: Peri<'static, PIN_16>,
+        cs: Peri<'static, PIN_17>,
+        disp: Peri<'static, PIN_22>,
+    ) -> Self {
         let mut config = SpiConfig::default();
-        config.frequency = DISPLAY_FREQ; // 2MHz
+        config.frequency = DISPLAY_FREQ;
         config.polarity = Polarity::IdleLow;
         config.phase = Phase::CaptureOnFirstTransition; // Mode 0
 
-        let spi = Spi::new(
-            // This uses DMA for transfers, I dont think it is possible to use a shared bus with DMA without a custom implementation?
-            p.SPI0, p.PIN_18,  // SCK
-            mosi,      // MOSI
-            miso,      // MISO
-            p.DMA_CH0, // TX DMA
-            p.DMA_CH1, // RX DMA
-            config,
-        );
+        let spi = Spi::new(spi, sck, mosi, miso, dma_tx, dma_rx, config);
 
-        let cs = Output::new(p.PIN_17, Level::Low);
-        let disp = Output::new(p.PIN_22, Level::Low);
+        let cs = Output::new(cs, Level::Low);
+        let disp = Output::new(disp, Level::Low);
 
         Self {
             spi,

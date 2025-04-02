@@ -1,5 +1,5 @@
-//!! Test taken from embassy/examples/usb_raw.rs to test library was working
-//! Status: Working
+//! Test taken from embassy/examples/usb_raw.rs to test library was working
+//! Status: Working (not dependent on other kywy libraries)
 
 //! Example of using USB without a pre-defined class, but instead responding to
 //! raw USB control requests.
