@@ -60,3 +60,9 @@ panic = "abort"
 lto = true
 codegen-units = 1
 opt-level = "z"   # Optimize for size
+
+[features]
+button-async = []
+button-poll = []
+
+default = ["button-async"]

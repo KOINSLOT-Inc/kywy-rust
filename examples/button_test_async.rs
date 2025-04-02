@@ -1,5 +1,7 @@
 //! examples/button_test.rs: Example to test button library on the Kywy board.
 //! Probably dont actually update the display on every button press, but this is just a test and I wanted to show that the commands are all processed.
+//!
+//! Compile with: cargo build --example button_test_async --target thumbv6m-none-eabi --release --features button-async --no-default-features
 
 #![no_std]
 #![no_main]
@@ -8,8 +10,8 @@ use defmt::*;
 use defmt_rtt as _;
 use panic_probe as _;
 
-use kywy::buttons::{ButtonEvent, ButtonId, ButtonState};
-use kywy::{kywy_buttons_from, kywy_display_from}; // Import the macros
+use kywy::button_async::{ButtonEvent, ButtonId, ButtonState};
+use kywy::{kywy_button_async_from, kywy_display_from}; // Import the macros
 
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
@@ -38,7 +40,7 @@ async fn main(spawner: Spawner) {
 
     // Initialize buttons
     info!("Initializing buttons");
-    kywy_buttons_from!(&spawner, p => button_channel);
+    kywy_button_async_from!(&spawner, p => button_channel);
     info!("Buttons initialized");
 
     display.clear(BinaryColor::Off).ok();

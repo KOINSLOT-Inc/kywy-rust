@@ -57,12 +57,27 @@ macro_rules! kywy_display_from {
 /// - Moves GPIO pins into `buttons::init`
 /// - Returns a `Buttons` struct bound to the given variable
 #[macro_export]
-macro_rules! kywy_buttons_from {
+macro_rules! kywy_button_async_from {
     ($spawner:expr, $peripherals:ident => $var:ident) => {
-        let mut $var = $crate::buttons::init(
+        let mut $var = $crate::button_async::init(
             $spawner,
             $peripherals.PIN_12, // Button: Right
             $peripherals.PIN_2,  // Button: Left
+            $peripherals.PIN_9,  // Button: DUp
+            $peripherals.PIN_3,  // Button: DDown
+            $peripherals.PIN_6,  // Button: DLeft
+            $peripherals.PIN_7,  // Button: DRight
+            $peripherals.PIN_8,  // Button: DCenter
+        );
+    };
+}
+
+#[macro_export]
+macro_rules! kywy_button_poll_from {
+    ($peripherals:ident => $var:ident) => {
+        let $var = $crate::button_poll::ButtonPoller::new(
+            $peripherals.PIN_2,  // Button: Left
+            $peripherals.PIN_12, // Button: Right
             $peripherals.PIN_9,  // Button: DUp
             $peripherals.PIN_3,  // Button: DDown
             $peripherals.PIN_6,  // Button: DLeft
