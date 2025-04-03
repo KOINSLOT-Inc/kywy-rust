@@ -39,13 +39,15 @@ jobs:
       - name: Build button_test_poll example
         run: cargo build --release --example button_test_poll --target thumbv6m-none-eabi --features button-poll --no-default-features
 
-      - name: Convert to UF2
+      - name: Convert all example binaries to UF2
         run: |
           mkdir -p artifacts
-          elf2uf2-rs target/thumbv6m-none-eabi/release/examples/hello_world artifacts/hello_world.uf2
-          elf2uf2-rs target/thumbv6m-none-eabi/release/examples/menu artifacts/menu.uf2
-          elf2uf2-rs target/thumbv6m-none-eabi/release/examples/button_test_async artifacts/button_test_async.uf2
-          elf2uf2-rs target/thumbv6m-none-eabi/release/examples/button_test_poll artifacts/button_test_poll.uf2
+          for f in target/thumbv6m-none-eabi/release/examples/*; do
+            [ -f "$f" ] || continue
+            base=$(basename "$f")
+            echo "Converting $base to UF2"
+            elf2uf2-rs "$f" "artifacts/${base}.uf2"
+          done
 
       - name: Create/force-push `latest` tag
         run: |
@@ -56,11 +58,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload UF2 artifacts
+      - name: Upload UF2 artifacts to GitHub Release
         run: |
-          for f in $(find . -name '*.uf2'); do
+          tag="${GITHUB_REF##*/}"
+          echo "Uploading .uf2 files to release: $tag"
+          for f in $(find artifacts -name '*.uf2' -print); do
             echo "Uploading $f"
-            gh release upload "$GITHUB_REF_NAME" "$f" --clobber
+            gh release upload "$tag" "$f" --clobber
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
