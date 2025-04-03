@@ -35,6 +35,7 @@ jobs:
           cargo build --release --example button_test_async --target thumbv6m-none-eabi
           cargo build --release --example button_test_poll --target thumbv6m-none-eabi --features button-poll --no-default-features
 
+      # Create tag for release
       - name: Create or reuse GitHub Release latest
         run: |
           tag="latest"
