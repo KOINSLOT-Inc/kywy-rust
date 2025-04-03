@@ -36,10 +36,21 @@ jobs:
           cargo build --release --example button_test_poll --target thumbv6m-none-eabi --features button-poll --no-default-features
 
       # Create tag for release
-      - name: Create or reuse GitHub Release latest
+      - name: Delete old release and tag (latest)
         run: |
+          set -e
           tag="latest"
-          gh release view "$tag" || gh release create "$tag" --title "Latest Build" --notes "Automated build"
+          echo "Deleting release and tag: $tag"
+
+          # Delete release if it exists
+          if gh release view "$tag" &>/dev/null; then
+            gh release delete "$tag" --yes
+          fi
+
+          # Delete remote tag if it exists
+          if git ls-remote --tags origin | grep "refs/tags/$tag" &>/dev/null; then
+            git push origin :refs/tags/$tag
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
