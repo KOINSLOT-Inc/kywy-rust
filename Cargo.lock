@@ -944,6 +944,7 @@ dependencies = [
  "embassy-usb 0.4.0 (git+https://github.com/embassy-rs/embassy?rev=3bc809e)",
  "embassy-usb-logger",
  "embedded-graphics",
+ "embedded-graphics-core",
  "embedded-hal 1.0.0",
  "embedded-menu",
  "log",

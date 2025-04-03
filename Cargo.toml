@@ -54,6 +54,7 @@ log = "0.4"
 embassy-usb-logger = "0.4.0"
 tinybmp = "0.6.0"
 embedded-menu = "0.6.1"
+embedded-graphics-core = "0.4.0"
 
 [profile.dev]
 panic = "abort"
