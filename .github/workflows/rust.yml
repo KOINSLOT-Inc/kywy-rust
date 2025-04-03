@@ -35,22 +35,22 @@ jobs:
           cargo build --release --example button_test_async --target thumbv6m-none-eabi
           cargo build --release --example button_test_poll --target thumbv6m-none-eabi --features button-poll --no-default-features
 
-      # Create tag for release
       - name: Delete old release and tag (latest)
         run: |
-          set -e
           tag="latest"
-          echo "Deleting release and tag: $tag"
 
-          # Delete release if it exists
-          if gh release view "$tag" &>/dev/null; then
-            gh release delete "$tag" --yes
-          fi
+          echo "Checking and deleting old release/tag for $tag"
+          gh release delete "$tag" --yes || true
+          git push origin :refs/tags/$tag || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          # Delete remote tag if it exists
-          if git ls-remote --tags origin | grep "refs/tags/$tag" &>/dev/null; then
-            git push origin :refs/tags/$tag
-          fi
+      - name: Recreate latest tag and release
+        run: |
+          tag="latest"
+          git tag -f "$tag"
+          git push origin "$tag" --force
+          gh release create "$tag" --title "Latest Build" --notes "Automated rebuild at $GITHUB_SHA"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
