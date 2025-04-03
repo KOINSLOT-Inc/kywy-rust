@@ -1,0 +1,29 @@
+name: Build Specific Examples
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-examples:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions/setup-rust@v1
+        with:
+          rust-version: stable
+
+      - name: Add thumbv6m target
+        run: rustup target add thumbv6m-none-eabi
+
+      - name: Build `menu` example for host
+        run: cargo build --example menu --release --target thumbyv6m-none-eabi
+
+      - name: Build `hello_world` example for thumbv6m-none-eabi
+        run: cargo build --example hello_world --release --target thumbv6m-none-eabi
