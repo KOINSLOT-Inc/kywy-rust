@@ -27,13 +27,25 @@ jobs:
       - name: Install elf2uf2-rs
         run: cargo install elf2uf2-rs
 
-      - name: Build hello_world (thumbv6m)
+      - name: Build hello_world
         run: cargo build --release --example hello_world --target thumbv6m-none-eabi
+
+      - name: Build menu example
+        run: cargo build --release --example menu --target thumbv6m-none-eabi
+
+      - name: Build button_test_async example
+        run: cargo build --release --example button_test_async --target thumbv6m-none-eabi
+
+      - name: Build button_test_poll example
+        run: cargo build --release --example button_test_poll --target thumbv6m-none-eabi --features "button_poll"
 
       - name: Convert to UF2
         run: |
           mkdir -p artifacts
           elf2uf2-rs target/thumbv6m-none-eabi/release/examples/hello_world artifacts/hello_world.uf2
+          elf2uf2-rs target/thumbv6m-none-eabi/release/examples/menu artifacts/menu.uf2
+          elf2uf2-rs target/thumbv6m-none-eabi/release/examples/button_test_async artifacts/button_test_async.uf2
+          elf2uf2-rs target/thumbv6m-none-eabi/release/examples/button_test_poll artifacts/button_test_poll.uf2
 
       - name: Create/force-push `latest` tag
         run: |
