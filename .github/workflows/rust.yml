@@ -1,18 +1,42 @@
-name: Build Specific Examples
+name: Auto Release UF2
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  build-and-release:
-    name: Cross-build & publish UF2
+  tag-commit:
+    name: Auto Tag Commit
     runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.create_tag.outputs.tag_name }}
 
     steps:
-      - name: Checkout repo
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create tag
+        id: create_tag
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          TAG=release-$SHORT_SHA
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag $TAG
+          git push origin $TAG
+
+          echo "tag_name=$TAG" >> "$GITHUB_OUTPUT"
+
+  build-and-release:
+    name: Build & Upload UF2
+    needs: tag-commit
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/release-')
+
+    steps:
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Rust
@@ -26,15 +50,15 @@ jobs:
       - name: Install elf2uf2-rs
         run: cargo install elf2uf2-rs
 
-      - name: Build hello_world example (release, thumbv6m)
+      - name: Build example hello_world
         run: cargo build --release --example hello_world --target thumbv6m-none-eabi
 
-      - name: Convert to UF2
+      - name: Convert ELF to UF2
         run: |
           mkdir -p artifacts
           elf2uf2-rs target/thumbv6m-none-eabi/release/examples/hello_world artifacts/hello_world.uf2
 
-      - name: Upload UF2 to GitHub Release
+      - name: Publish UF2 to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           files: artifacts/hello_world.uf2
