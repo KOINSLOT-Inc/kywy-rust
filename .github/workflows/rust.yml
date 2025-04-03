@@ -55,15 +55,6 @@ jobs:
             elf2uf2-rs "$f" "artifacts/${filename}.uf2"
           done
 
-      - name: Create/force-push `latest` tag
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -f latest
-          git push -f origin latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Upload UF2 artifacts to GitHub Release
         run: |
           tag="latest"
