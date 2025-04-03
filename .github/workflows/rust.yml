@@ -56,12 +56,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish UF2 to GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: latest
-          name: "Latest Build"
-          files: artifacts/hello_world.uf2
-          prerelease: true
+      - name: Upload UF2 artifacts
+        run: |
+          for f in $(find . -name '*.uf2'); do
+            echo "Uploading $f"
+            gh release upload "$GITHUB_REF_NAME" "$f" --clobber
+          done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
