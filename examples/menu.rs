@@ -52,18 +52,19 @@ async fn main(spawner: Spawner) {
         .with_input_adapter(Programmed); // set input adapter type, Programmed is what we want for mapping button inputs
 
     let mut menu = Menu::with_style("Main Menu", menu_style) // here we define the actual menu layout, these dont actually do anything
-        .add_item("Start", ">", |_| ())
-        .add_item("Settings", false, |_| ())
-        .add_item("About", false, |_| ())
+        .add_item("Start", ">", |_| ()) // add item to menu, the first string is the name of the item, the second is the indicator, and the third is a closure that is called when the item is selected
+        .add_item("Settings", false, |_| ()) // add item to menu, the first string is the name of the item, the second is the indicator, and the third is a closure that is called when the item is selected but this time with a boolean indicator
+        .add_item("About", false, |_| ()) // same as last but says about, none of these actually do anything
         .build();
     display.clear_buffer(BinaryColor::On); // clear perevious message
-    menu.update(&display);
+    menu.update(&display); // update the menu with the init state
     menu.draw(&mut display).unwrap(); // write to display buffer
     display.write_display().await; // update display
 
     loop {
-        let event: ButtonEvent = button_channel.receive().await;
+        let event: ButtonEvent = button_channel.receive().await; // wait for button event
         let interaction = match (event.id, event.state) {
+            // match button event to desired input and map to a menu interaction
             (ButtonId::DUp, ButtonState::Pressed) => {
                 Some(Interaction::Navigation(Navigation::Previous))
             }
@@ -75,10 +76,10 @@ async fn main(spawner: Spawner) {
         };
         if let Some(i) = interaction {
             display.clear_buffer(BinaryColor::On);
-            menu.interact(i);
-            menu.update(&display);
-            menu.draw(&mut display).unwrap();
-            display.write_display().await;
+            menu.interact(i); // sends the interaction to the menu system
+            menu.update(&display); // update the menu with the new state
+            menu.draw(&mut display).unwrap(); // draws the menu to display buffer
+            display.write_display().await; // update display
         }
     }
 }
