@@ -27,18 +27,13 @@ jobs:
       - name: Install elf2uf2-rs
         run: cargo install elf2uf2-rs
 
-      # Put things to build here with `cargo build`
-      - name: Build hello_world
-        run: cargo build --release --example hello_world --target thumbv6m-none-eabi
-
-      - name: Build menu example
-        run: cargo build --release --example menu --target thumbv6m-none-eabi
-
-      - name: Build button_test_async example
-        run: cargo build --release --example button_test_async --target thumbv6m-none-eabi
-
-      - name: Build button_test_poll example
-        run: cargo build --release --example button_test_poll --target thumbv6m-none-eabi --features button-poll --no-default-features
+      # Put things to build here
+      - name: Build examples
+        run: |
+          cargo build --release --example hello_world --target thumbv6m-none-eabi
+          cargo build --release --example menu --target thumbv6m-none-eabi
+          cargo build --release --example button_test_async --target thumbv6m-none-eabi
+          cargo build --release --example button_test_poll --target thumbv6m-none-eabi --features button-poll --no-default-features
 
       - name: Convert canonical ELF example binaries to UF2
         run: |
@@ -51,7 +46,7 @@ jobs:
               echo "Skipping $filename (has hash suffix)"
               continue
             fi
-            # Skip if filename has an extension (just to be safe)
+            # Skip if filename has an extension
             if [[ "$filename" == *.* ]]; then
               echo "Skipping $filename (has extension)"
               continue
