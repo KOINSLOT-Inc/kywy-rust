@@ -27,6 +27,7 @@ jobs:
       - name: Install elf2uf2-rs
         run: cargo install elf2uf2-rs
 
+      # Put things to build here with `cargo build`
       - name: Build hello_world
         run: cargo build --release --example hello_world --target thumbv6m-none-eabi
 
