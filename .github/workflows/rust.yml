@@ -39,13 +39,18 @@ jobs:
       - name: Build button_test_poll example
         run: cargo build --release --example button_test_poll --target thumbv6m-none-eabi --features button-poll --no-default-features
 
-      - name: Convert all example ELF binaries to UF2
+      - name: Convert canonical ELF example binaries to UF2
         run: |
           mkdir -p artifacts
           for f in target/thumbv6m-none-eabi/release/examples/*; do
             [ -f "$f" ] || continue
             filename=$(basename "$f")
-            # Skip if filename has an extension (contains a dot)
+            # Skip if filename contains '-' (likely a hash suffix)
+            if [[ "$filename" == *-* ]]; then
+              echo "Skipping $filename (has hash suffix)"
+              continue
+            fi
+            # Skip if filename has an extension (just to be safe)
             if [[ "$filename" == *.* ]]; then
               echo "Skipping $filename (has extension)"
               continue
