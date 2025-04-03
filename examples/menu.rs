@@ -85,6 +85,7 @@ async fn main(spawner: Spawner) {
 }
 
 fn write_message<D: DrawTarget<Color = BinaryColor>>(
+    // this function is used to write a string to the display
     display: &mut D,
     msg: &str,
     style: MonoTextStyle<BinaryColor>,
