@@ -39,14 +39,19 @@ jobs:
       - name: Build button_test_poll example
         run: cargo build --release --example button_test_poll --target thumbv6m-none-eabi --features button-poll --no-default-features
 
-      - name: Convert all example binaries to UF2
+      - name: Convert all example ELF binaries to UF2
         run: |
           mkdir -p artifacts
           for f in target/thumbv6m-none-eabi/release/examples/*; do
             [ -f "$f" ] || continue
-            base=$(basename "$f")
-            echo "Converting $base to UF2"
-            elf2uf2-rs "$f" "artifacts/${base}.uf2"
+            filename=$(basename "$f")
+            # Skip if filename has an extension (contains a dot)
+            if [[ "$filename" == *.* ]]; then
+              echo "Skipping $filename (has extension)"
+              continue
+            fi
+            echo "Converting $filename to UF2"
+            elf2uf2-rs "$f" "artifacts/${filename}.uf2"
           done
 
       - name: Create/force-push `latest` tag
