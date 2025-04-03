@@ -35,6 +35,13 @@ jobs:
           cargo build --release --example button_test_async --target thumbv6m-none-eabi
           cargo build --release --example button_test_poll --target thumbv6m-none-eabi --features button-poll --no-default-features
 
+      - name: Create or reuse GitHub Release latest
+        run: |
+          tag="latest"
+          gh release view "$tag" || gh release create "$tag" --title "Latest Build" --notes "Automated build"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Convert canonical ELF example binaries to UF2
         run: |
           mkdir -p artifacts
