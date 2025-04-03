@@ -7,23 +7,27 @@ on:
     branches: [main]
 
 jobs:
-  build-examples:
+  build:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        BUILD_TARGET: [release]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Rust
-        uses: rust-lang/setup-rust@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          rust-version: stable
+          targets: thumbv6m-none-eabi
 
-      - name: Add thumbv6m target
-        run: rustup target add thumbv6m-none-eabi
+      - name: Build library in "${{ matrix.BUILD_TARGET }}" mode
+        run: cargo build --profile ${{ matrix.BUILD_TARGET }}
 
-      - name: Build `menu` example for host
-        run: cargo build --example menu --release --target thumbyv6m-none-eabi
+      - name: Run tests in "${{ matrix.BUILD_TARGET }}" mode
+        run: cargo test --profile ${{ matrix.BUILD_TARGET }}
 
-      - name: Build `hello_world` example for thumbv6m-none-eabi
-        run: cargo build --example hello_world --release --target thumbv6m-none-eabi
+      - name: Build example `menu` for host in "${{ matrix.BUILD_TARGET }}" mode
+        run: cargo build --example menu --profile ${{ matrix.BUILD_TARGET }}
+
+      - name: Cross-build `hello_world` for thumbv6m-none-eabi
+        run: cargo build --example hello_world --profile ${{ matrix.BUILD_TARGET }} --target thumbv6m-none-eabi
