@@ -6,28 +6,41 @@ on:
   pull_request:
     branches: [main]
 
+name: Build & Release UF2
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on version tags like v0.1.0, v1.2.3
+
 jobs:
-  build:
+  build-and-release:
+    name: Cross-build & publish UF2
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        BUILD_TARGET: [release]
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: thumbv6m-none-eabi
 
-      - name: Build library in "${{ matrix.BUILD_TARGET }}" mode
-        run: cargo build --profile ${{ matrix.BUILD_TARGET }}
+      - name: Install elf2uf2-rs
+        run: cargo install elf2uf2-rs
 
-      - name: Run tests in "${{ matrix.BUILD_TARGET }}" mode
-        run: cargo test --profile ${{ matrix.BUILD_TARGET }}
+      - name: Build hello_world example (release, thumbv6m)
+        run: cargo build --release --example hello_world --target thumbv6m-none-eabi
 
-      - name: Build example `menu` for host in "${{ matrix.BUILD_TARGET }}" mode
-        run: cargo build --example menu --profile ${{ matrix.BUILD_TARGET }}
+      - name: Convert to UF2
+        run: |
+          mkdir -p artifacts
+          elf2uf2-rs target/thumbv6m-none-eabi/release/examples/hello_world artifacts/hello_world.uf2
 
-      - name: Cross-build `hello_world` for thumbv6m-none-eabi
-        run: cargo build --example hello_world --profile ${{ matrix.BUILD_TARGET }} --target thumbv6m-none-eabi
+      - name: Upload UF2 to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifacts/hello_world.uf2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
