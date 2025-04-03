@@ -6,13 +6,6 @@ on:
   pull_request:
     branches: [main]
 
-name: Build & Release UF2
-
-on:
-  push:
-    tags:
-      - 'v*'  # Triggers on version tags like v0.1.0, v1.2.3
-
 jobs:
   build-and-release:
     name: Cross-build & publish UF2
