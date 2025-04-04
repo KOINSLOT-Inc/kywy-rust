@@ -19,7 +19,7 @@ pub enum ButtonId {
     DCenter,
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ButtonState {
     Pressed,
     Released,

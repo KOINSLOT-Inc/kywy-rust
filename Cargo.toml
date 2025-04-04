@@ -41,7 +41,6 @@ embassy-futures = { git = "https://github.com/embassy-rs/embassy", rev = "3bc809
 bitvec = { version = "1.0", default-features = false }
 embedded-graphics = "0.8.1"
 
-
 # Usb Serial interface for debugging
 embassy-sync = { git = "https://github.com/embassy-rs/embassy", rev = "3bc809e", features = [
     "defmt",
@@ -52,9 +51,15 @@ embassy-usb = { git = "https://github.com/embassy-rs/embassy", rev = "3bc809e", 
 static_cell = "1.2.0"
 log = "0.4"
 embassy-usb-logger = "0.4.0"
+
+# Example dependencies
 tinybmp = "0.6.0"
 embedded-menu = "0.6.1"
 embedded-graphics-core = "0.4.0"
+heapless = "0.7"
+rand = { version = "0.8", default-features = false, features = ["small_rng"] }
+itoa = "1.0.15"
+
 
 [profile.dev]
 panic = "abort"
