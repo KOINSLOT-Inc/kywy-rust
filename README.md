@@ -19,13 +19,9 @@ This is a work in progress.
 To do:
 - [X] Implement display driver (LS013B7DH05)
 - [X] Implement button interface (See examples/button_tests.rs)
-- [ ] Implement battery interface
+- [X] Implement battery interface
 - [ ] Implement SD-card interface
-- [ ] Implement USB debug interface
-- [ ] Implement USB mass storage interface
-- [ ] Implement reboot to USB program mode
-- [ ] Add support for qwiic devices
-- [ ] Add support for SPI "backpack" devices
+- [ ] Implement USB serial and reboot
 - [ ] Add more documentation
 - [ ] Add more examples/games
 
