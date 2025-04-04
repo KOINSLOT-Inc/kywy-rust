@@ -13,12 +13,7 @@ use embedded_graphics::{
     prelude::*,
 };
 
-use embedded_icon::{
-    NewIcon,
-    iconoir::size24px::{
-        Battery25, Battery50, Battery75, BatteryCharging, BatteryEmpty, BatteryFull,
-    },
-};
+use embedded_iconoir::prelude::*;
 
 bind_interrupts!(struct Irqs {
     ADC_IRQ_FIFO => adc::InterruptHandler;
@@ -63,6 +58,9 @@ impl<'a> BatteryMonitor<'a> {
             color,
         }
     }
+    pub fn move_to(&mut self, new_position: Point) {
+        self.position = new_position;
+    }
 
     pub async fn read_voltage_mv(&mut self) -> u16 {
         let raw = self.adc.read(&mut self.channel).await.unwrap_or(0) as f32;
@@ -105,32 +103,32 @@ impl<'a> BatteryMonitor<'a> {
 
         match status {
             BatteryStatus::Charging => {
-                let icon = BatteryCharging::new(color);
+                let icon = icons::size16px::system::BatteryCharging::new(color); // see https://github.com/Yandrik/embedded-iconoir/blob/main/embedded-iconoir/src/icons.gen.rs translated from https://iconoir.com
                 Image::new(&icon, position).draw(display)
             }
             BatteryStatus::Charged => {
-                let icon = BatteryFull::new(color);
+                let icon = icons::size16px::system::BatteryFull::new(color);
                 Image::new(&icon, position).draw(display)
             }
             BatteryStatus::NotCharging => match percent {
                 85..=100 => {
-                    let icon = BatteryFull::new(color);
+                    let icon = icons::size16px::system::BatteryFull::new(color);
                     Image::new(&icon, position).draw(display)
                 }
                 60..=84 => {
-                    let icon = Battery75::new(color);
+                    let icon = icons::size16px::system::BatterySevenFive::new(color);
                     Image::new(&icon, position).draw(display)
                 }
                 25..=59 => {
-                    let icon = Battery50::new(color);
+                    let icon = icons::size16px::system::BatteryFiveZero::new(color);
                     Image::new(&icon, position).draw(display)
                 }
                 5..=24 => {
-                    let icon = Battery25::new(color);
+                    let icon = icons::size16px::system::BatteryTwoFive::new(color);
                     Image::new(&icon, position).draw(display)
                 }
                 _ => {
-                    let icon = BatteryEmpty::new(color);
+                    let icon = icons::size16px::system::BatteryEmpty::new(color);
                     Image::new(&icon, position).draw(display)
                 }
             },
@@ -140,6 +138,6 @@ impl<'a> BatteryMonitor<'a> {
 
 impl OriginDimensions for BatteryMonitor<'_> {
     fn size(&self) -> Size {
-        Size::new(24, 24)
+        Size::new(16, 16)
     }
 }

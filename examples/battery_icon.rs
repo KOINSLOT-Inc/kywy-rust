@@ -28,7 +28,7 @@ async fn main(_spawner: Spawner) {
         display.clear(BinaryColor::On).unwrap();
 
         Text::new(
-            "Battery Status",
+            "Battery Status Test",
             Point::new(10, 20),
             MonoTextStyle::new(&FONT_6X10, BinaryColor::Off),
         )

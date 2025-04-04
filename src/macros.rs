@@ -95,7 +95,7 @@ macro_rules! kywy_battery_from {
             $peripherals.PIN_10,
             $peripherals.PIN_11,
             $peripherals.ADC,
-            Point::new(112, 0),
+            Point::new(125, 0), //default battery location
             embedded_graphics::pixelcolor::BinaryColor::Off,
         );
     };
