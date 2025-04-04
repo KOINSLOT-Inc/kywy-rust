@@ -1,11 +1,7 @@
 //! examples/bricks.rs
-//! Arkanoid clone for Kywy device
-
+//! Arkanoid clone for kywy
 #![no_std]
 #![no_main]
-
-//! Bricks game for Kywy device (breakout-style)
-//! Build with: cargo build --release --example bricks --target thumbv6m-none-eabi
 
 use defmt::*;
 use defmt_rtt as _;
@@ -17,6 +13,7 @@ use kywy::{kywy_button_async_from, kywy_display_from};
 
 use embedded_graphics::{
     Drawable,
+    image::Image,
     mono_font::{MonoTextStyle, ascii::FONT_6X10},
     pixelcolor::BinaryColor,
     prelude::*,
@@ -29,19 +26,22 @@ use embassy_sync::blocking_mutex::raw::ThreadModeRawMutex;
 use embassy_sync::channel::Receiver;
 use embassy_time::{Duration, Instant, Timer};
 use heapless::Vec;
+use micromath::F32Ext;
+use tinybmp::Bmp;
 
-// Display size and layout constants
+// Screen and layout
 const SCREEN_WIDTH: i32 = 144;
 const SCREEN_HEIGHT: i32 = 168;
 const SCORE_HEIGHT: i32 = 10;
 const PADDLE_Y: i32 = SCREEN_HEIGHT - SCORE_HEIGHT - 6;
 
+// Game parameters
 const PADDLE_WIDTH: i32 = 24;
 const PADDLE_HEIGHT: i32 = 4;
-
 const BALL_SIZE: i32 = 5;
-const BALL_SPEED_MIN: i32 = 1;
-const BALL_SPEED_MAX: i32 = 4;
+const BALL_SPEED_MIN: f32 = 3.0;
+const BALL_SPEED_MAX: f32 = 6.0;
+const BALL_VEL_Y_MIN: f32 = 0.5; // <-- avoid near-horizontal bounces
 
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
@@ -54,12 +54,22 @@ async fn main(spawner: Spawner) {
     display.enable();
 
     kywy_button_async_from!(&spawner, p => buttons);
-
     let mut receiver = buttons.receiver();
+
+    static IMAGE_DATA: &[u8] = include_bytes!("../examples/Art Assets/Bricks.bmp");
+    let bmp = Bmp::from_slice(IMAGE_DATA).unwrap();
+    let width = bmp.size().width as i32;
+    let height = bmp.size().height as i32;
+    let pos = Point::new((SCREEN_WIDTH - width) / 2, (SCREEN_HEIGHT - height) / 2);
+    let image = Image::new(&bmp, pos);
+    image.draw(&mut display).unwrap();
+    display.write_display().await;
+    Timer::after(Duration::from_millis(200)).await;
+    buttons.clear();
+    let _: ButtonEvent = buttons.receive().await;
 
     loop {
         run_bricks(&mut display, &mut receiver).await;
-        draw_message(&mut display, "Press to Restart");
         display.write_display().await;
         wait_for_button(&mut receiver).await;
     }
@@ -97,14 +107,11 @@ async fn run_bricks(
     let total_bricks = bricks.len() as u32;
 
     let mut tick_delay_ms = 40u64;
-
     let mut held_left = false;
     let mut held_right = false;
-    let mut hold_timer = 0;
     let mut last_paddle_update = Instant::now();
 
     loop {
-        // INPUT
         while let Ok(event) = button_channel.try_receive() {
             match (event.id, event.state) {
                 (ButtonId::DLeft, ButtonState::Pressed) => held_left = true,
@@ -115,35 +122,22 @@ async fn run_bricks(
             }
         }
 
-        // Paddle movement timing
         if Instant::now().duration_since(last_paddle_update) >= Duration::from_millis(30) {
-            let paddle_speed = if hold_timer > 10 { 3 } else { 1 };
-
+            let paddle_speed = 3;
             if held_left {
                 paddle.pos.x = (paddle.pos.x - paddle_speed).max(0);
             }
             if held_right {
                 paddle.pos.x = (paddle.pos.x + paddle_speed).min(SCREEN_WIDTH - PADDLE_WIDTH);
             }
-
-            if held_left || held_right {
-                hold_timer += 1;
-            } else {
-                hold_timer = 0;
-            }
-
             last_paddle_update = Instant::now();
         }
 
-        // MOVE BALL
         ball.pos += ball.vel;
-
-        // Fix ball getting stuck bouncing vertically
         if ball.vel.x == 0 {
             ball.vel.x = 1;
         }
 
-        // WALL COLLISIONS
         if ball.pos.x <= 0 || ball.pos.x >= SCREEN_WIDTH - BALL_SIZE {
             ball.vel.x = -ball.vel.x;
         }
@@ -151,7 +145,6 @@ async fn run_bricks(
             ball.vel.y = -ball.vel.y;
         }
 
-        // PADDLE COLLISION
         let paddle_rect = Rectangle::new(
             paddle.pos,
             Size::new(PADDLE_WIDTH as u32, PADDLE_HEIGHT as u32),
@@ -160,37 +153,23 @@ async fn run_bricks(
 
         if paddle_rect.intersection(&ball_rect).size != Size::new(0, 0) {
             ball.vel.y = -ball.vel.y;
-
-            if ball.vel.y < 0 {
-                ball.vel.y = -ball.vel.y.clamp(BALL_SPEED_MIN, BALL_SPEED_MAX);
-            } else {
-                ball.vel.y = ball.vel.y.clamp(BALL_SPEED_MIN, BALL_SPEED_MAX);
-            }
-
             let paddle_center = paddle.pos.x + PADDLE_WIDTH / 2;
             let ball_center = ball.pos.x + BALL_SIZE / 2;
             let diff = ball_center - paddle_center;
-            ball.vel.x = diff.clamp(-BALL_SPEED_MAX, BALL_SPEED_MAX);
+            ball.vel.x = diff.clamp(-4, 4);
+            ball.vel = normalize_velocity(ball.vel, ball_speed_from_score(score, total_bricks));
         }
 
-        // BRICK COLLISIONS
         for brick in &mut bricks {
             if brick.alive && brick.rect.intersection(&ball_rect).size != Size::new(0, 0) {
                 brick.alive = false;
-
-                if ball.vel.y < 0 {
-                    ball.vel.y = (-ball.vel.y + 1).clamp(-BALL_SPEED_MAX, -BALL_SPEED_MIN);
-                } else {
-                    ball.vel.y = (ball.vel.y + 1).clamp(BALL_SPEED_MIN, BALL_SPEED_MAX);
-                }
                 ball.vel.y = -ball.vel.y;
-
+                ball.vel = normalize_velocity(ball.vel, ball_speed_from_score(score, total_bricks));
                 score += 1;
                 break;
             }
         }
 
-        // WIN
         if score == total_bricks {
             draw_message(display, "YOU WIN!");
             display.write_display().await;
@@ -198,7 +177,6 @@ async fn run_bricks(
             return;
         }
 
-        // GAME OVER
         if ball.pos.y >= SCREEN_HEIGHT {
             draw_message(display, "GAME OVER");
             display.write_display().await;
@@ -206,7 +184,6 @@ async fn run_bricks(
             return;
         }
 
-        // RENDER
         display.clear_buffer(BinaryColor::On);
         draw_ball(display, &ball);
         draw_paddle(display, &paddle);
@@ -220,6 +197,32 @@ async fn run_bricks(
 
         Timer::after_millis(tick_delay_ms).await;
     }
+}
+
+fn ball_speed_from_score(score: u32, total: u32) -> f32 {
+    let t = score as f32 / total.max(1) as f32;
+    BALL_SPEED_MIN + (BALL_SPEED_MAX - BALL_SPEED_MIN) * t
+}
+
+fn normalize_velocity(vel: Point, target_speed: f32) -> Point {
+    let dx = vel.x as f32;
+    let dy = vel.y as f32;
+    let mag = (dx * dx + dy * dy).sqrt();
+    if mag == 0.0 {
+        return Point::new(1, -1);
+    }
+
+    let mut vx = dx / mag;
+    let mut vy = dy / mag;
+
+    // Enforce minimum vertical component to prevent flat bounces
+    if vy.abs() < BALL_VEL_Y_MIN {
+        vy = BALL_VEL_Y_MIN.copysign(vy);
+        vx = (1.0 - vy * vy).sqrt().copysign(vx);
+    }
+
+    let scale = target_speed;
+    Point::new((vx * scale).round() as i32, (vy * scale).round() as i32)
 }
 
 fn draw_ball(display: &mut KywyDisplay<'_>, ball: &Ball) {

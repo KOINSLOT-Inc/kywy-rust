@@ -978,6 +978,7 @@ dependencies = [
  "heapless 0.7.17",
  "itoa",
  "log",
+ "micromath",
  "panic-probe",
  "rand",
  "static_cell",
