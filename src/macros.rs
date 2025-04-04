@@ -86,3 +86,17 @@ macro_rules! kywy_button_poll_from {
         );
     };
 }
+
+#[macro_export]
+macro_rules! kywy_battery_from {
+    ($peripherals:ident => $battery_var:ident) => {
+        let mut $battery_var = $crate::battery::BatteryMonitor::new(
+            $peripherals.PIN_26,
+            $peripherals.PIN_10,
+            $peripherals.PIN_11,
+            $peripherals.ADC,
+            Point::new(112, 0),
+            embedded_graphics::pixelcolor::BinaryColor::Off,
+        );
+    };
+}
