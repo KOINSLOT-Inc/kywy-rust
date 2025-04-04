@@ -35,7 +35,7 @@ jobs:
           cargo build --release --example button_test_async --target thumbv6m-none-eabi
           cargo build --release --example button_test_poll --target thumbv6m-none-eabi --features button-poll --no-default-features
           cargo build --release --example snake --target thumbv6m-none-eabi
-          cargo build --release --example brick --target thumby6m-none-eabi
+          cargo build --release --example brick --target thumbv6m-none-eabi
 
       - name: Delete old release and tag (latest)
         run: |
