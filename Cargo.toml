@@ -60,9 +60,7 @@ heapless = "0.7"
 rand = { version = "0.8", default-features = false, features = ["small_rng"] }
 itoa = "1.0.15"
 micromath = "2.1.0"
-embedded-icon = { version = "0.0.1", features = [
-    "iconoir",
-] } # Default size 24px
+embedded-iconoir = { version = "0.2.3", features = ["16px"] }
 
 
 [profile.dev]
