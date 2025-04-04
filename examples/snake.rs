@@ -1,3 +1,6 @@
+//! examples/snake.rs
+//! Snake game for Kywy
+
 #![no_std]
 #![no_main]
 
