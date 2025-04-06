@@ -10,7 +10,7 @@ use defmt_rtt as _;
 use panic_probe as _;
 
 use kywy::button_async::{ButtonEvent, ButtonId, ButtonState};
-use kywy::{kywy_button_async_from, kywy_display_from}; // Import the macros
+use kywy::{kywy_button_async_from, kywy_display_from, kywy_spi_from}; // Import the macros
 
 use embassy_executor::Spawner;
 
