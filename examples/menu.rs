@@ -35,7 +35,8 @@ async fn main(spawner: Spawner) {
 
     // Initialize display
     info!("Initializing display");
-    kywy_display_from!(p => display);
+    kywy_spi_from!(p => spi_bus);
+    kywy_display_from!(spi_bus, p => display);
     display.initialize().await;
     display.enable();
     display.clear_buffer(BinaryColor::On);

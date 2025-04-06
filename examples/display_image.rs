@@ -19,7 +19,8 @@ async fn main(_spawner: embassy_executor::Spawner) {
     info!("Starting Kywy BMP Graphic Demo!");
 
     let p = embassy_rp::init(Default::default());
-    kywy_display_from!(p => display);
+    kywy_spi_from!(p => spi_bus);
+    kywy_display_from!(spi_bus, p => display);
 
     display.initialize().await;
     display.enable();

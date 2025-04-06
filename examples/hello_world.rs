@@ -13,6 +13,7 @@ use embedded_graphics::{
     text::Text,
 };
 use kywy::kywy_display_from;
+use kywy::kywy_spi_from;
 use panic_probe as _;
 
 #[embassy_executor::main]
@@ -20,10 +21,8 @@ async fn main(_spawner: embassy_executor::Spawner) {
     info!("Starting Kywy Hello World display!");
 
     let p = embassy_rp::init(Default::default());
-    kywy_display_from!(p => display);
-
-    display.initialize().await; // This handles display enable/clear sequence
-    display.enable(); // make sure display is turned on
+    kywy_spi_from!(p => spi_bus);
+    kywy_display_from!(spi_bus, p => display);
 
     // Black Screen
     display.clear_buffer(BinaryColor::Off); // Clear buffer to black

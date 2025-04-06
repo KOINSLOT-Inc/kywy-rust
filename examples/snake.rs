@@ -12,7 +12,7 @@ use core::cell::Cell;
 use itoa::Buffer;
 
 use kywy::button_async::{ButtonEvent, ButtonId, ButtonState};
-use kywy::{kywy_button_async_from, kywy_display_from};
+use kywy::{kywy_button_async_from, kywy_display_from, kywy_spi_from};
 
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Instant, Timer};
@@ -254,7 +254,8 @@ async fn main(spawner: Spawner) {
 
     let p = embassy_rp::init(Default::default());
 
-    kywy_display_from!(p => display);
+    kywy_spi_from!(p => spi_bus);
+    kywy_display_from!(spi_bus, p => display);
     kywy_button_async_from!(&spawner, p => button_channel);
 
     let style = MonoTextStyle::new(&FONT_6X10, BinaryColor::Off);

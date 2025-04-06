@@ -11,13 +11,14 @@ use embedded_graphics::{
     prelude::*,
     text::Text,
 };
-use kywy::{kywy_battery_from, kywy_display_from}; // ← 🧠 Import the macros
+use kywy::{kywy_battery_from, kywy_display_from, kywy_spi_from};
 use panic_probe as _;
 
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
-    kywy_display_from!(p => display);
+    kywy_spi_from!(p => spi_bus);
+    kywy_display_from!(spi_bus, p => display);
     kywy_battery_from!(p => battery);
 
     display.initialize().await;
