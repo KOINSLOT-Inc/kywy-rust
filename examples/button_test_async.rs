@@ -11,7 +11,7 @@ use defmt_rtt as _;
 use panic_probe as _;
 
 use kywy::button_async::{ButtonEvent, ButtonId, ButtonState};
-use kywy::{kywy_button_async_from, kywy_display_from}; // Import the macros
+use kywy::{kywy_button_async_from, kywy_display_from, kywy_spi_from}; // Import the macros
 
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
@@ -30,7 +30,8 @@ async fn main(spawner: Spawner) {
 
     // Initialize display
     info!("Initializing display");
-    kywy_display_from!(p => display);
+    kywy_spi_from!(p => spi_bus);
+    kywy_display_from!(spi_bus, p => display);
     let style = MonoTextStyle::new(&FONT_6X10, BinaryColor::Off);
     display.initialize().await;
     display.enable();

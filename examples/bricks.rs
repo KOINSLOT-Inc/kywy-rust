@@ -1,7 +1,9 @@
 //! examples/bricks.rs
-//! Arkanoid clone for kywy
+
 #![no_std]
 #![no_main]
+
+//! Arkanoid clone for kywy
 
 use defmt::*;
 use defmt_rtt as _;
@@ -9,7 +11,7 @@ use panic_probe as _;
 
 use kywy::button_async::{ButtonEvent, ButtonId, ButtonState};
 use kywy::display::KywyDisplay;
-use kywy::{kywy_button_async_from, kywy_display_from};
+use kywy::{kywy_button_async_from, kywy_display_from, kywy_spi_from};
 
 use embedded_graphics::{
     Drawable,
@@ -25,6 +27,8 @@ use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::ThreadModeRawMutex;
 use embassy_sync::channel::Receiver;
 use embassy_time::{Duration, Instant, Timer};
+use embedded_graphics::prelude::DrawTarget;
+use embedded_hal_async::spi::SpiDevice;
 use heapless::Vec;
 use micromath::F32Ext;
 use tinybmp::Bmp;
@@ -41,16 +45,16 @@ const PADDLE_HEIGHT: i32 = 4;
 const BALL_SIZE: i32 = 5;
 const BALL_SPEED_MIN: f32 = 3.0;
 const BALL_SPEED_MAX: f32 = 6.0;
-const BALL_VEL_Y_MIN: f32 = 0.5; // <-- avoid near-horizontal bounces
+const BALL_VEL_Y_MIN: f32 = 0.5;
 
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
     info!("Starting Bricks...");
 
     let p = embassy_rp::init(Default::default());
+    kywy_spi_from!(p => spi_bus);
+    kywy_display_from!(spi_bus, p => display);
 
-    kywy_display_from!(p => display);
-    display.initialize().await;
     display.enable();
 
     kywy_button_async_from!(&spawner, p => buttons);
@@ -89,8 +93,8 @@ struct Brick {
     alive: bool,
 }
 
-async fn run_bricks(
-    display: &mut KywyDisplay<'_>,
+async fn run_bricks<SPI: SpiDevice>(
+    display: &mut KywyDisplay<'_, SPI>,
     button_channel: &mut Receiver<'static, ThreadModeRawMutex, ButtonEvent, 16>,
 ) {
     let mut paddle = Paddle {
@@ -215,7 +219,6 @@ fn normalize_velocity(vel: Point, target_speed: f32) -> Point {
     let mut vx = dx / mag;
     let mut vy = dy / mag;
 
-    // Enforce minimum vertical component to prevent flat bounces
     if vy.abs() < BALL_VEL_Y_MIN {
         vy = BALL_VEL_Y_MIN.copysign(vy);
         vx = (1.0 - vy * vy).sqrt().copysign(vx);
@@ -225,14 +228,21 @@ fn normalize_velocity(vel: Point, target_speed: f32) -> Point {
     Point::new((vx * scale).round() as i32, (vy * scale).round() as i32)
 }
 
-fn draw_ball(display: &mut KywyDisplay<'_>, ball: &Ball) {
+fn format_score(score: u32) -> heapless::String<16> {
+    use core::fmt::Write as FmtWrite;
+    let mut s = heapless::String::<16>::new();
+    let _ = FmtWrite::write_fmt(&mut s, format_args!("Score: {}", score));
+    s
+}
+
+fn draw_ball<D: DrawTarget<Color = BinaryColor>>(display: &mut D, ball: &Ball) {
     Rectangle::new(ball.pos, Size::new(BALL_SIZE as u32, BALL_SIZE as u32))
         .into_styled(PrimitiveStyle::with_fill(BinaryColor::Off))
         .draw(display)
         .ok();
 }
 
-fn draw_paddle(display: &mut KywyDisplay<'_>, paddle: &Paddle) {
+fn draw_paddle<D: DrawTarget<Color = BinaryColor>>(display: &mut D, paddle: &Paddle) {
     Rectangle::new(
         paddle.pos,
         Size::new(PADDLE_WIDTH as u32, PADDLE_HEIGHT as u32),
@@ -242,7 +252,7 @@ fn draw_paddle(display: &mut KywyDisplay<'_>, paddle: &Paddle) {
     .ok();
 }
 
-fn draw_bricks(display: &mut KywyDisplay<'_>, bricks: &[Brick]) {
+fn draw_bricks<D: DrawTarget<Color = BinaryColor>>(display: &mut D, bricks: &[Brick]) {
     for brick in bricks.iter().filter(|b| b.alive) {
         brick
             .rect
@@ -252,20 +262,13 @@ fn draw_bricks(display: &mut KywyDisplay<'_>, bricks: &[Brick]) {
     }
 }
 
-fn draw_score(display: &mut KywyDisplay<'_>, score: u32) {
+fn draw_score<D: DrawTarget<Color = BinaryColor>>(display: &mut D, score: u32) {
     let style = MonoTextStyle::new(&FONT_6X10, BinaryColor::Off);
     let msg = format_score(score);
     let _ = Text::new(&msg, Point::new(5, SCREEN_HEIGHT - 2), style).draw(display);
 }
 
-fn format_score(score: u32) -> heapless::String<16> {
-    use core::fmt::Write as FmtWrite;
-    let mut s = heapless::String::<16>::new();
-    let _ = FmtWrite::write_fmt(&mut s, format_args!("Score: {}", score));
-    s
-}
-
-fn draw_message(display: &mut KywyDisplay<'_>, msg: &str) {
+fn draw_message<D: DrawTarget<Color = BinaryColor>>(display: &mut D, msg: &str) {
     let style = MonoTextStyle::new(&FONT_6X10, BinaryColor::Off);
     let _ = Text::new(msg, Point::new(20, SCREEN_HEIGHT / 2), style).draw(display);
 }
