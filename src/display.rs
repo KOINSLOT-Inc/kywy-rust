@@ -128,6 +128,12 @@ where
             self.buffer[index] &= !(1 << bit);
         }
     }
+    pub fn height(&self) -> usize {
+        HEIGHT
+    }
+    pub fn width(&self) -> usize {
+        WIDTH
+    }
 }
 
 impl<'a, SPI> OriginDimensions for KywyDisplay<'a, SPI> {
