@@ -18,12 +18,14 @@ This is a work in progress.
 
 To do:
 - [X] Implement display driver (LS013B7DH05)
-- [X] Implement button interface (See examples/button_tests.rs)
+- [X] Implement button interface
 - [X] Implement battery interface
-- [ ] Implement SD-card interface
-- [ ] Implement USB serial and reboot
+- [ ] Improve battery reading function
+- [ ] Change the way display driver handles VCOM toggle
 - [ ] Add more documentation
 - [ ] Add more examples/games
+- [ ] Implement USB serial and reboot
+- [ ] Implement SD-card interface (waiting on shared bus support from embedded-sdmmc)
 
 
 # Build examples
