@@ -115,7 +115,7 @@ impl<'a> BatteryMonitor<'a> {
         let mv = self.read_voltage_mv().await;
         let raw_percent = Self::voltage_to_percent(mv);
 
-        let hysteresis = 2;
+        let hysteresis = 20;
         if (raw_percent as i16 - self.last_percent as i16).abs() > hysteresis {
             self.last_percent = raw_percent;
         }
