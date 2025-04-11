@@ -57,4 +57,3 @@ You can add an example to build directly from this repository by creating or mod
 to start your own project with minimal configuration, download this repository with 'git clone https://github.com/Jmlannan/Kywy-Rust/' you can then add a new example in the examples directory. Build it with the command above in build examples.
 
 You can also add this to your own project with the following in your Cargo.toml file. However, this library is currently unstable and may not work as expected.
->>>>>>> old-repo/main
