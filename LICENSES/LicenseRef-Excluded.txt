@@ -1,0 +1,7 @@
+SPDX-License-Identifier: LicenseRef-Excluded
+
+These files are excluded from REUSE compliance because they are boilerplate,
+auto-generated, or otherwise not meaningfully licensable.
+
+Examples: .gitignore, Cargo.lock, build.rs, GitHub workflow YAMLs, etc.
+
