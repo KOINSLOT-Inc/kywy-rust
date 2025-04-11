@@ -1,6 +1,10 @@
 #![no_std]
 #![no_main]
 
+// SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use core::fmt::Write as Write2; // ← required for core::write! to work
 use defmt_rtt as _;
 use embassy_executor::Spawner;

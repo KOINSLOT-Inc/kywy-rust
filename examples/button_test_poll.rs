@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 //! /examples/button_test_poll.rs
 //! Example to test button polling library on the Kywy board.
 //! Polls buttons every frame then updates the display.

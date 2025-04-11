@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 //! examples/button_test.rs: Example to test button library on the Kywy board.
 //! Probably dont actually update the display on every button press, but this is just a test and I wanted to show that the commands are all processed.
 //!

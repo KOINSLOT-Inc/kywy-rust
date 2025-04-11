@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 //! Embassy example USB interface
 
 //! This example shows how to use USB (Universal Serial Bus) in the RP2040 chip.

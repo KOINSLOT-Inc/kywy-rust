@@ -1,0 +1,35 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+
+Files: **/*.bmp
+License: CC0-1.0
+Copyright: 2023-2025 KOINSLOT Inc.
+
+Files: .github/workflows/rust.yml
+License: LicenseRef-Excluded 
+Copyright: None
+Comment: Workflow file, not subject to licensing.
+
+Files: .gitignore
+License: LicenseRef-Excluded
+Copyright: None
+Comment: Ignored files listing, not subject to reuse licensing.
+
+Files: Cargo.lock
+License: LicenseRef-Excluded
+Copyright: None
+Comment: Auto-generated file, excluded from license checks.
+
+Files: Cargo.toml
+License: LicenseRef-Excluded
+Copyright: None
+Comment: Declares metadata, not subject to reuse licensing.
+
+Files: build.rs
+License: LicenseRef-Excluded
+Copyright: None
+Comment: Build script, excluded per project policy.
+
+Files: memory.x
+License: LicenseRef-Excluded
+Copyright: None
+Comment: Linker script, excluded from licensing requirements.

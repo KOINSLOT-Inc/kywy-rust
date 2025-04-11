@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 //! examples/display_image.rs
 //! Bitmap Graphic Demo for Kywy display
 //! Make sure BMP is converted to monochrome useing magick "examples/Art Assets/<image file>" -resize 144x168 -monochrome -depth 1 BMP3:"examples/Art Assets/<filename>.bmp"
