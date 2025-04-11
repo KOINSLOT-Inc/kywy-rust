@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 //! src/button_poll.rs
 //! Button polling library for Kywy board (direct level check, no async)
 //! Returns true (Pressed) or false (Released)

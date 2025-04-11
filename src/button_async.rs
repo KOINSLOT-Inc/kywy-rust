@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 //! src/buttons.rs
 //! Button event system using a shared Channel for press/release detection.
 
