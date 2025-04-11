@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023-2025 KOINSLOT Inc.
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+
 [package]
 name = "kywy"
 version = "0.2.0"

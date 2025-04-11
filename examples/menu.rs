@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 //! examples/menu.rs: Example of building menus with the Kywy device.
 //! This example uses the embedded_menu library to display a simple dummy menu
 //! Compile with: cargo build --example button_test_async --target thumbv6m-none-eabi --release

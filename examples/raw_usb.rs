@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 //! Test taken from embassy/examples/usb_raw.rs to test library was working
 //! Status: Working (not dependent on other kywy libraries)
 

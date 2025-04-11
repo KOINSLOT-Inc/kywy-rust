@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // This will make an LED blink on the Raspberry Pi Pico. This is to test your compile environment and make sure everything is working.
 // Status: Working
 #![no_std]
