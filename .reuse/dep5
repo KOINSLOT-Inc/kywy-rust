@@ -9,6 +9,11 @@ License: LicenseRef-Excluded
 Copyright: None
 Comment: Workflow file, not subject to licensing.
 
+Files: .github/workflows/rust-clippy.yaml
+License: LicenseRef-Excluded
+Copyright: None
+Comment: Boilerplate rust-clippy.yaml config for linting
+
 Files: .gitignore
 License: LicenseRef-Excluded
 Copyright: None
