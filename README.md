@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
-# Rust Library for Kywy devices
+# Rust library for Kywy devices
 Get a kywy at https://kywy.io
 
 Kywy is a small, low-cost, low-power, open-source, microcontroller board with a sharp memory display, a 5-way joystick, two side button, a USB-C connector, a qwiic I2C interface, SPI/GPIO expansion pins and a microSD card slot all in a small keychain package. It is designed to be easy to use and program, and is perfect for learning embedded programming, creating small games, or building into your projects.
