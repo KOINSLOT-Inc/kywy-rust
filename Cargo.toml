@@ -59,7 +59,7 @@ embassy-sync = { git = "https://github.com/embassy-rs/embassy", rev = "3bc809e",
 embassy-usb = { git = "https://github.com/embassy-rs/embassy", rev = "3bc809e", default-features = false, features = [
     "defmt",
 ] }
-static_cell = "1.2.0"
+static_cell = "2.1.0"
 log = "0.4"
 embassy-usb-logger = "0.4.0"
 
