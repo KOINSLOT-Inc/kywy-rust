@@ -46,14 +46,21 @@ jobs:
       - name: Install required cargo
         run: cargo install clippy-sarif sarif-fmt
 
-      - name: Run rust-clippy
+      - name: Run rust-clippy defaults
         run:
           cargo clippy
-          --all-features
           --target thumbv6m-none-eabi
           --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
         continue-on-error: true
 
+      - name: Run rust-clippy
+        run:
+          cargo clippy
+          --features button-poll
+          --target thumbv6m-none-eabi
+          --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
+        continue-on-error: true
+        
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
