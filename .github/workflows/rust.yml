@@ -1,4 +1,4 @@
-name: Release UF2 (latest)
+name: Build and Release (on main)
 
 on:
   push:
@@ -25,10 +25,7 @@ jobs:
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y libudev-dev
 
-      - name: Install elf2uf2-rs
-        run: cargo install elf2uf2-rs
-
-      - name: Build examples
+      - name: Test build examples (Wihtout releaseing)
         run: |
           cargo build --release --example hello_world --target thumbv6m-none-eabi
           cargo build --release --example menu --target thumbv6m-none-eabi
@@ -54,7 +51,7 @@ jobs:
       - name: Install elf2uf2-rs
         run: cargo install elf2uf2-rs
 
-      - name: Rebuild examples (needed because artifacts weren't persisted)
+      - name: Build examples
         run: |
           cargo build --release --example hello_world --target thumbv6m-none-eabi
           cargo build --release --example menu --target thumbv6m-none-eabi
