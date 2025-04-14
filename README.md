@@ -40,7 +40,7 @@ To build this run:
 replacing <example_name> with one of the .rs files in the examples directory.
 
 To convert to a UF2 file run:
-`elf2uf2-rs target/thumbv6m-none-eabi/release/examples/<example_name>'
+`elf2uf2-rs target/thumbv6m-none-eabi/release/examples/<example_name>`
 you can install elf2uf2-rs by running:
 `cargo install elf2uf2-rs`
 (make sure your path is set properly to find the binary)
