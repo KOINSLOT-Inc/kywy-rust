@@ -24,7 +24,8 @@ jobs:
 
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y libudev-dev
-
+    
+        # Test build examples, does not release
       - name: Test build examples (Wihtout releaseing)
         run: |
           cargo build --release --example hello_world --target thumbv6m-none-eabi
@@ -48,10 +49,17 @@ jobs:
         with:
           targets: thumbv6m-none-eabi
 
+       - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libudev-dev
+ 
+
       - name: Install elf2uf2-rs
         run: cargo install elf2uf2-rs
 
-      - name: Build examples
+        # Add final release examples here
+      - name: Build examples for release
         run: |
           cargo build --release --example hello_world --target thumbv6m-none-eabi
           cargo build --release --example menu --target thumbv6m-none-eabi
