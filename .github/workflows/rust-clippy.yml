@@ -41,6 +41,7 @@ jobs:
           toolchain: stable
           components: clippy
           override: true
+          target: thumbv6m-none-eabi
 
       - name: Install required cargo
         run: cargo install clippy-sarif sarif-fmt
