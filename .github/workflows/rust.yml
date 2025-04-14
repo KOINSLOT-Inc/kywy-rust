@@ -1,15 +1,16 @@
-name: Release UF2 (latest)
+name: Build and Release (on main)
 
 on:
   push:
     branches:
       - main
+  pull_request:
 
 permissions:
   contents: write
 
 jobs:
-  build-and-release:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,10 +25,32 @@ jobs:
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y libudev-dev
 
+      - name: Test build examples (Wihtout releaseing)
+        run: |
+          cargo build --release --example hello_world --target thumbv6m-none-eabi
+          cargo build --release --example menu --target thumbv6m-none-eabi
+          cargo build --release --example button_test_async --target thumbv6m-none-eabi
+          cargo build --release --example button_test_poll --target thumbv6m-none-eabi --features button-poll --no-default-features
+          cargo build --release --example snake --target thumbv6m-none-eabi
+          cargo build --release --example bricks --target thumbv6m-none-eabi
+
+  release:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: thumbv6m-none-eabi
+
       - name: Install elf2uf2-rs
         run: cargo install elf2uf2-rs
 
-      # Put things to build here
       - name: Build examples
         run: |
           cargo build --release --example hello_world --target thumbv6m-none-eabi
@@ -40,8 +63,6 @@ jobs:
       - name: Delete old release and tag (latest)
         run: |
           tag="latest"
-
-          echo "Checking and deleting old release/tag for $tag"
           gh release delete "$tag" --yes || true
           git push origin :refs/tags/$tag || true
         env:
@@ -56,33 +77,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Convert canonical ELF example binaries to UF2
+      - name: Convert ELF to UF2
         run: |
           mkdir -p artifacts
           for f in target/thumbv6m-none-eabi/release/examples/*; do
             [ -f "$f" ] || continue
             filename=$(basename "$f")
-            # Skip if filename contains '-' (likely a hash suffix)
-            if [[ "$filename" == *-* ]]; then
-              echo "Skipping $filename (has hash suffix)"
+            if [[ "$filename" == *-* || "$filename" == *.* ]]; then
+              echo "Skipping $filename"
               continue
             fi
-            # Skip if filename has an extension
-            if [[ "$filename" == *.* ]]; then
-              echo "Skipping $filename (has extension)"
-              continue
-            fi
-            echo "Converting $filename to UF2"
             elf2uf2-rs "$f" "artifacts/${filename}.uf2"
           done
 
       - name: Upload UF2 artifacts to GitHub Release
         run: |
-          tag="latest"
-          echo "Uploading .uf2 files to release: $tag"
-          for f in $(find artifacts -name '*.uf2' -print); do
-            echo "Uploading $f"
-            gh release upload "$tag" "$f" --clobber
+          for f in artifacts/*.uf2; do
+            gh release upload latest "$f" --clobber
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
