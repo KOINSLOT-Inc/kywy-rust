@@ -4,6 +4,7 @@
 
 
 //! Kywy Display Driver
+//! Compatable with embedded-graphics DrawTarget
 
 use core::ops::Not;
 use embassy_rp::gpio::Output;
