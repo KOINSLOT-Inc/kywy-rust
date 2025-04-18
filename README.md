@@ -43,7 +43,7 @@ To do:
 
 # Build examples
 To build this run:
-`cargo build --release --example <example_name> --target thumbv6m-none-eabi`
+`cargo build --release --target thumbv6m-none-eabi --example <example_name>`
 replacing <example_name> with one of the .rs files in the examples directory.
 
 To convert to a UF2 file run:
