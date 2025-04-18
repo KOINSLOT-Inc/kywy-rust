@@ -5,6 +5,12 @@ on:
   push:
     branches:
       - '**'
+    paths:
+      - 'src/**'
+      - 'examples/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+
 
 permissions:
   contents: write
