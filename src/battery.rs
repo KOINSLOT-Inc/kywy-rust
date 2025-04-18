@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+//! Battery monitor for the Koinslot device. With battery icon drawing capabilities.
+
 use embassy_rp::{
     Peri,
     adc::{self, Adc, Async, Channel, Config as AdcConfig},
