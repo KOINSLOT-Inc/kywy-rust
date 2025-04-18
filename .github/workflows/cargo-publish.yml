@@ -1,4 +1,5 @@
-name: Build check and release if on main
+#needs versioning added to cargo.toml
+name: Publish to crates.io
 
 on:
   push:
