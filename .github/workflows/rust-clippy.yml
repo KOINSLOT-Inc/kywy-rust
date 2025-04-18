@@ -14,7 +14,7 @@
 name: rust-clippy analyze
 
 on:
-  push:
+  pull_request:
     branches: [ "main" ]
   schedule:
     - cron: '45 18 * * 2'
