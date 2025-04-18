@@ -34,7 +34,7 @@ To do:
 - [X] Implement button interface
 - [X] Implement battery interface
 - [ ] Improve battery reading function with real data
-- [ ] Change the way display driver handles VCOM toggle
+- [ ] Build game engine
 - [ ] Add more documentation
 - [ ] Add more examples/games
 - [ ] Implement USB serial and reboot
