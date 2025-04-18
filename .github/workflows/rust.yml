@@ -1,16 +1,17 @@
 name: Build check and release if on main
 
 on:
+  pull_request:
   push:
     branches:
-      - main
-  pull_request:
+      - '**'
 
 permissions:
   contents: write
 
 jobs:
   build:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
 
     steps:
@@ -36,7 +37,6 @@ jobs:
           cargo build --release --example bricks --target thumbv6m-none-eabi
 
   release:
-    needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
