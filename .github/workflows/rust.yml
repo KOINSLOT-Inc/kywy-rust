@@ -34,7 +34,7 @@ jobs:
           cargo check-all-features --target thumbv6m-none-eabi
     
         # Test build examples, does not release
-      - name: Test build examples (Wihtout releaseing)
+      - name: Test build examples (Without releaseing)
         run: |
           cargo build --release --example hello_world --target thumbv6m-none-eabi
           cargo build --release --example menu --target thumbv6m-none-eabi
