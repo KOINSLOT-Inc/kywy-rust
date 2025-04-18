@@ -5,6 +5,7 @@
 //! src/button_poll.rs
 //! Button polling library for Kywy board (direct level check, no async)
 //! Returns true (Pressed) or false (Released)
+//! Requires feature 'button_poll'
 
 use embassy_rp::Peri;
 use embassy_rp::gpio::{Input, Level, Pull};
