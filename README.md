@@ -19,6 +19,9 @@ This is an rust library for building out rust programs on the Kywy device. You c
  - Button interface
     - Async message queue or polling support (examples/button_test_async.rs and examples/button_test_polling.rs)
 
+# Rust docs
+[https://koinslot-inc.github.io/kywy-rust/kywy/]
+
 # Still in progress
 This is a work in progress.
 
