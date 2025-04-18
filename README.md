@@ -11,6 +11,8 @@ Kywy is a small, low-cost, low-power, open-source, microcontroller board with a 
 
 This is an rust library for building out rust programs on the Kywy device. You can also find the C++/Arduino library at https://github.com/KOINSLOT-Inc/kywy or in the Ardiuno library manager.
 
+For support, join our discord: [![Discord](https://img.shields.io/discord/1172988360063725629?label=Join%20us%20on%20Discord&logo=discord&style=flat&color=5865F2)](https://discord.gg/d65Xfdjp)
+
 # Features
  - Display driver
     - Supports embedded graphics library
