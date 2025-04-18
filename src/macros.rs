@@ -52,7 +52,7 @@ macro_rules! kywy_display_from {
 
         //initialize SPI device
         let mut config = Config::default();
-        config.frequency = 1_000_000;
+        config.frequency = 1_000_000; // Try overclocking me! some displays can handle higher frequencies (~8_000_000), 2-4 MHz seems mostly stable but the spec says 1 MHz so leaving it there for now.
         config.polarity = Polarity::IdleLow;
         config.phase = Phase::CaptureOnFirstTransition;
         let disp_spi = SpiDeviceWithConfig::new(&$spi_bus, cs_disp_pin, config);
