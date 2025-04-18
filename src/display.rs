@@ -5,6 +5,7 @@
 
 //! Kywy Display Driver
 //! Compatable with embedded-graphics DrawTarget
+//! for use with LS013B7DH05
 
 use core::ops::Not;
 use embassy_rp::gpio::Output;
