@@ -9,7 +9,7 @@ Get a kywy at https://kywy.io
 
 Kywy is a small, low-cost, low-power, open-source, microcontroller board with a sharp memory display, a 5-way joystick, two side button, a USB-C connector, a qwiic I2C interface, SPI/GPIO expansion pins and a microSD card slot all in a small keychain package. It is designed to be easy to use and program, and is perfect for learning embedded programming, creating small games, or building into your projects.
 
-This is an rust library for building out rust programs on the Kywy device. You can also find the C++ library at https://github.com/KOINSLOT-Inc/kywy.
+This is an rust library for building out rust programs on the Kywy device. You can also find the C++/Arduino library at https://github.com/KOINSLOT-Inc/kywy or in the Ardiuno library manager.
 
 # Features
  - Display driver
