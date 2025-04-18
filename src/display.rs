@@ -2,6 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+
+//! Kywy Display Driver
+
 use core::ops::Not;
 use embassy_rp::gpio::Output;
 use embedded_graphics::{
