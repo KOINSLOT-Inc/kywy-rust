@@ -23,8 +23,15 @@ jobs:
         with:
           targets: thumbv6m-none-eabi
 
+      - name: Install cargo-all-features
+        run: cargo install cargo-all-features
+
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y libudev-dev
+
+      - name: Test all features
+        run: |
+          cargo all-features test --target thumbv6m-none-eabi
     
         # Test build examples, does not release
       - name: Test build examples (Wihtout releaseing)
