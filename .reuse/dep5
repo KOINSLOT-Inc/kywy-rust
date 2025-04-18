@@ -14,6 +14,11 @@ License: LicenseRef-Excluded
 Copyright: None
 Comment: Boilerplate rust-clippy.yaml config for linting
 
+Files: .github/workflows/cargo-publish.yml
+License: LicenseRef-Excluded
+Copyright: None
+Comment: Simple workflow file for publishing to crates.io
+
 Files: .gitignore
 License: LicenseRef-Excluded
 Copyright: None
