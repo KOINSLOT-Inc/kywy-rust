@@ -31,7 +31,7 @@ jobs:
 
       - name: Test all features
         run: |
-          cargo check-all-features test --target thumbv6m-none-eabi
+          cargo check-all-features --target thumbv6m-none-eabi
     
         # Test build examples, does not release
       - name: Test build examples (Wihtout releaseing)
