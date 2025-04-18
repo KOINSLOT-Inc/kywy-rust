@@ -29,7 +29,7 @@ To do:
 - [X] Implement display driver (LS013B7DH05)
 - [X] Implement button interface
 - [X] Implement battery interface
-- [X] Improve battery reading function
+- [ ] Improve battery reading function with real data
 - [ ] Change the way display driver handles VCOM toggle
 - [ ] Add more documentation
 - [ ] Add more examples/games
