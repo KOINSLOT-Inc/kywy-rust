@@ -47,6 +47,7 @@ pub struct KywyDisplay<'a, SPI> {
     buffer: [u8; TOTAL_BUFFER_SIZE],
     line_buf: [u8; LINE_PACKET_SIZE],
     vcom: Vcom,
+    auto_vcom: bool,
 }
 
 impl<'a, SPI> KywyDisplay<'a, SPI>
@@ -60,6 +61,7 @@ where
             buffer: [0x00; TOTAL_BUFFER_SIZE],
             line_buf: [0x00; LINE_PACKET_SIZE],
             vcom: Vcom::Hi,
+            auto_vcom: true, //defaults to toggling vcom every display update
         }
     }
 
@@ -83,7 +85,9 @@ where
     }
 
     pub async fn write_display(&mut self) {
-        self.vcom = !self.vcom;
+        if self.auto_vcom {
+            self.vcom = !self.vcom;
+        }
 
         for line in 0..HEIGHT {
             self.line_buf[0] = Command::WriteLine as u8 | self.vcom as u8 | 0x80;
@@ -107,8 +111,18 @@ where
             .await;
     }
 
+    pub fn set_auto_vcom(&mut self, enable: bool) {
+        self.auto_vcom = enable;
+    }
+
+    pub fn is_auto_vcom(&self) -> bool {
+        self.auto_vcom
+    }
+
     pub async fn clear_display(&mut self) {
-        self.vcom = !self.vcom;
+        if self.auto_vcom {
+            self.vcom = !self.vcom;
+        }
         self.write_spi(&[Command::ClearMemory as u8 | self.vcom as u8, 0x00])
             .await;
     }
