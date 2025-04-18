@@ -1,4 +1,4 @@
-name: Build and Release (on main)
+name: Build check and release if on main
 
 on:
   push:
