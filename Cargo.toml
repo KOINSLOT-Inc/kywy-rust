@@ -12,7 +12,7 @@ license = "GPL-3.0-or-later"
 repository = "https://github.com/orgs/KOINSLOT-Inc"
 homepage = "https://kywy.io"
 keywords = ["embedded", "games", "graphics", "cortex-m", "rp2040"]
-categories = ["embedded", "game", "graphics"]
+categories = ["embedded", "games"]
 
 [dependencies]
 # Embedded Cortex-M specific dependencies
