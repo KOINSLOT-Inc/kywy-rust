@@ -41,8 +41,7 @@ jobs:
             exit 1
           fi
 
-      - uses: ryohidaka/action-cargo-publish@v0.1.0
-        with:
-          path: "."
-          token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-          dry-run: false
+      - name: Publish to crates.io
+        run: cargo publish --no-verify
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
