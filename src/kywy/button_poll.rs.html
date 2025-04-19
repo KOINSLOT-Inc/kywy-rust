@@ -7,7 +7,7 @@
 <a href=#7 id=7 data-nosnippet>7</a>//! Returns true (Pressed) or false (Released)
 <a href=#8 id=8 data-nosnippet>8</a>//! Requires feature 'button_poll'
 <a href=#9 id=9 data-nosnippet>9</a>
-<a href=#10 id=10 data-nosnippet>10</a></span><span class="kw">use </span>embassy_rp::Peri;
+<a href=#10 id=10 data-nosnippet>10</a></span><span class="kw">use </span>embassy_rp::PeripheralRef;
 <a href=#11 id=11 data-nosnippet>11</a><span class="kw">use </span>embassy_rp::gpio::{Input, Level, Pull};
 <a href=#12 id=12 data-nosnippet>12</a><span class="kw">use </span>embassy_rp::peripherals::<span class="kw-2">*</span>;
 <a href=#13 id=13 data-nosnippet>13</a>
@@ -34,15 +34,15 @@
 <a href=#34 id=34 data-nosnippet>34</a>
 <a href=#35 id=35 data-nosnippet>35</a><span class="kw">impl </span>ButtonPoller {
 <a href=#36 id=36 data-nosnippet>36</a>    <span class="kw">pub fn </span>new(
-<a href=#37 id=37 data-nosnippet>37</a>        pin_left: Peri&lt;<span class="lifetime">'static</span>, PIN_2&gt;,
-<a href=#38 id=38 data-nosnippet>38</a>        pin_right: Peri&lt;<span class="lifetime">'static</span>, PIN_12&gt;,
-<a href=#39 id=39 data-nosnippet>39</a>        pin_dup: Peri&lt;<span class="lifetime">'static</span>, PIN_9&gt;,
-<a href=#40 id=40 data-nosnippet>40</a>        pin_ddown: Peri&lt;<span class="lifetime">'static</span>, PIN_3&gt;,
-<a href=#41 id=41 data-nosnippet>41</a>        pin_dleft: Peri&lt;<span class="lifetime">'static</span>, PIN_6&gt;,
-<a href=#42 id=42 data-nosnippet>42</a>        pin_dright: Peri&lt;<span class="lifetime">'static</span>, PIN_7&gt;,
-<a href=#43 id=43 data-nosnippet>43</a>        pin_dcenter: Peri&lt;<span class="lifetime">'static</span>, PIN_8&gt;,
+<a href=#37 id=37 data-nosnippet>37</a>        pin_left: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_2&gt;,
+<a href=#38 id=38 data-nosnippet>38</a>        pin_right: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_12&gt;,
+<a href=#39 id=39 data-nosnippet>39</a>        pin_dup: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_9&gt;,
+<a href=#40 id=40 data-nosnippet>40</a>        pin_ddown: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_3&gt;,
+<a href=#41 id=41 data-nosnippet>41</a>        pin_dleft: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_6&gt;,
+<a href=#42 id=42 data-nosnippet>42</a>        pin_dright: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_7&gt;,
+<a href=#43 id=43 data-nosnippet>43</a>        pin_dcenter: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_8&gt;,
 <a href=#44 id=44 data-nosnippet>44</a>    ) -&gt; <span class="self">Self </span>{
-<a href=#45 id=45 data-nosnippet>45</a>        <span class="kw">fn </span>mk_input&lt;P: embassy_rp::gpio::Pin + <span class="lifetime">'static</span>&gt;(pin: Peri&lt;<span class="lifetime">'static</span>, P&gt;) -&gt; Input&lt;<span class="lifetime">'static</span>&gt; {
+<a href=#45 id=45 data-nosnippet>45</a>        <span class="kw">fn </span>mk_input&lt;P: embassy_rp::gpio::Pin + <span class="lifetime">'static</span>&gt;(pin: PeripheralRef&lt;<span class="lifetime">'static</span>, P&gt;) -&gt; Input&lt;<span class="lifetime">'static</span>&gt; {
 <a href=#46 id=46 data-nosnippet>46</a>            <span class="kw">let </span><span class="kw-2">mut </span>input = Input::new(pin, Pull::Up);
 <a href=#47 id=47 data-nosnippet>47</a>            input.set_schmitt(<span class="bool-val">true</span>);
 <a href=#48 id=48 data-nosnippet>48</a>            input
