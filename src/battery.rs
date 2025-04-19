@@ -5,7 +5,7 @@
 //! Battery monitor for the Koinslot device. With battery icon drawing capabilities.
 
 use embassy_rp::{
-    Peri,
+    PeripheralRef,
     adc::{self, Adc, Async, Channel, Config as AdcConfig},
     bind_interrupts,
     gpio::{Input, Pull},
@@ -47,10 +47,10 @@ pub struct BatteryMonitor<'a> {
 
 impl<'a> BatteryMonitor<'a> {
     pub async fn new(
-        adc_pin: Peri<'a, PIN_26>,
-        charging_pin: Peri<'a, PIN_10>,
-        standby_pin: Peri<'a, PIN_11>,
-        adc_periph: Peri<'a, ADC>,
+        adc_pin: PeripheralRef<'a, PIN_26>,
+        charging_pin: PeripheralRef<'a, PIN_10>,
+        standby_pin: PeripheralRef<'a, PIN_11>,
+        adc_periph: PeripheralRef<'a, ADC>,
         position: Point,
         color: BinaryColor,
     ) -> Self {
