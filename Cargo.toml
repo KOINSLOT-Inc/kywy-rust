@@ -11,7 +11,7 @@ description = "Kywy is a simple and easy-to-use library for building games on th
 license = "GPL-3.0-or-later"
 repository = "https://github.com/orgs/KOINSLOT-Inc"
 homepage = "https://kywy.io"
-keywords = ["embedded", "game", "graphics", "cortex-m", "riscv", "sharp-memory-display", "game-console"]
+keywords = ["embedded", "game", "graphics", "cortex-m", "sharp-memory-display"]
 categories = ["embedded", "game", "graphics"]
 
 [dependencies]
