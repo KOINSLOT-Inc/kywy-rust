@@ -1,0 +1,48 @@
+#needs versioning added to cargo.toml
+name: Publish to crates.io
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'examples/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    name: 'publish'
+
+    # Reference your environment variables
+    environment: cargo
+
+    steps:
+      - uses: actions/checkout@master
+        with:
+          # get git tags info
+          fetch-depth: 0
+
+      - name: Get current version from Cargo.toml
+        id: get_version
+        run: |
+          VERSION=$(grep '^version' Cargo.toml | head -n 1 | sed -E 's/version = "(.*)"/\1/')
+          echo "cargo_version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check version against latest git tag
+        id: version_check
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0)
+          if [ "v${{ steps.get_version.outputs.cargo_version }}" == "$LAST_TAG" ]; then
+            echo "Version has not been bumped. Exiting..."
+            exit 1
+          fi
+
+      - uses: ryohidaka/action-cargo-publish@v0.1.0
+        with:
+          path: "."
+          token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          dry-run: false

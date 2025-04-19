@@ -1,16 +1,23 @@
-name: Build and Release (on main)
+name: Build check and release if on main
 
 on:
+  pull_request:
   push:
     branches:
-      - main
-  pull_request:
+      - '**'
+    paths:
+      - 'src/**'
+      - 'examples/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+
 
 permissions:
   contents: write
 
 jobs:
   build:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
 
     steps:
@@ -22,11 +29,18 @@ jobs:
         with:
           targets: thumbv6m-none-eabi
 
+      - name: Install cargo-all-features
+        run: cargo install cargo-all-features
+
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y libudev-dev
+
+      - name: Test all features
+        run: |
+          cargo check-all-features --target thumbv6m-none-eabi
     
         # Test build examples, does not release
-      - name: Test build examples (Wihtout releaseing)
+      - name: Test build examples (without releaseing)
         run: |
           cargo build --release --example hello_world --target thumbv6m-none-eabi
           cargo build --release --example menu --target thumbv6m-none-eabi
@@ -36,7 +50,6 @@ jobs:
           cargo build --release --example bricks --target thumbv6m-none-eabi
 
   release:
-    needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
@@ -105,4 +118,15 @@ jobs:
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Generate Documentation
+        run: |
+          cargo doc --no-deps --target thumbv6m-none-eabi --all-features
+          mkdir -p docs
+          cp -r target/thumbv6m-none-eabi/doc/* docs/
 
+      - name: Deploy Documentation
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs # The directory where rustdoc outputs files

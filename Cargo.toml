@@ -6,6 +6,13 @@
 name = "kywy"
 version = "0.2.0"
 edition = "2024"
+authors = ["Koinslot_INC"]
+description = "Kywy is a simple and easy-to-use library for building games on the Kywy Device"
+license = "GNU General Public License v3.0"
+repository = "https://github.com/orgs/KOINSLOT-Inc"
+homepage = "https://kywy.io"
+keywords = ["embedded", "game", "graphics", "cortex-m", "riscv", "sharp-memory-display", "game-console"]
+categories = ["embedded", "game", "graphics"]
 
 [dependencies]
 # Embedded Cortex-M specific dependencies
