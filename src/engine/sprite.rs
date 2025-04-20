@@ -96,15 +96,17 @@ impl<'a> Sprite<'a> {
 }
 
 pub struct Animation<'a> {
-    pub frames: &'a [(u32, u32)], // list of (index_x, index_y) for frames
+    pub sheet: &'a SpriteSheet<'a>, // reference to the sprite sheet
+    pub frames: &'a [(u32, u32)],   // list of (index_x, index_y) for frames
     pub looped: bool,
     pub current_frame: usize,
     pub finished: bool,
 }
 
 impl<'a> Animation<'a> {
-    pub fn new(frames: &'a [(u32, u32)], looped: bool) -> Self {
+    pub fn new(sheet: &'a SpriteSheet<'a>, frames: &'a [(u32, u32)], looped: bool) -> Self {
         Self {
+            sheet,
             frames,
             looped,
             current_frame: 0,
@@ -128,7 +130,12 @@ impl<'a> Animation<'a> {
         }
     }
 
-    pub fn current_frame(&self) -> (u32, u32) {
+    pub fn current_frame_sprite(&self) -> Option<Sprite<'a>> {
+        let (x, y) = self.frames[self.current_frame];
+        self.sheet.sprite(x, y)
+    }
+
+    pub fn current_frame_loc(&self) -> (u32, u32) {
         self.frames[self.current_frame]
     }
 
