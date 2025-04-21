@@ -150,6 +150,9 @@ pub struct SpriteInstance<'a> {
 }
 
 impl<'a> SpriteInstance<'a> {
+    pub fn move_by(&mut self, dx: i32, dy: i32) {
+        self.position = self.position + Point::new(dx, dy);
+    }
     pub fn update(&mut self, default_index: usize) {
         self.advance();
         if !self.current().looped && self.current().is_finished() {
@@ -179,9 +182,6 @@ impl<'a> SpriteInstance<'a> {
     pub fn trigger(&mut self, index: usize) {
         if index < self.animations.len() {
             self.active_index = index;
-            let anim = self.current_mut();
-            anim.current_frame = 0;
-            anim.finished = false;
         }
     }
 }

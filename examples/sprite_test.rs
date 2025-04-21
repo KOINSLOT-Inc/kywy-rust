@@ -4,7 +4,7 @@
 
 //! This example demonstrates the use of the `Sprite` struct from the `kywy` crate.
 //! It creates a sprite from a sprite sheet and animates it on a display.
-//! This only uses sprites.rs and no additional engine components.
+//! This only uses sprites.rs and no additional engine components to create animations with button events and move a sprite around with the dpad.
 
 #![no_std]
 #![no_main]
@@ -24,7 +24,7 @@ use panic_probe as _;
 
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
-    info!("Sprite test with multi-button input");
+    info!("Sprite D-Pad control test");
 
     let p = embassy_rp::init(Default::default());
     kywy_spi_from!(p => spi_bus);
@@ -42,13 +42,13 @@ async fn main(spawner: Spawner) {
     let right_trigger: &[(u32, u32)] = &[(0, 2), (1, 2), (2, 2)];
 
     let mut animations: Vec<_, 4> = Vec::new();
-    animations.push(Animation::new(&sheet, idle, true)).unwrap(); // index 0
+    animations.push(Animation::new(&sheet, idle, true)).unwrap(); // 0
     animations
         .push(Animation::new(&sheet, left_trigger, false))
-        .unwrap(); // index 1
+        .unwrap(); // 1
     animations
         .push(Animation::new(&sheet, right_trigger, false))
-        .unwrap(); // index 2
+        .unwrap(); // 2
 
     let mut sprite = SpriteInstance::new(animations, Point::new(40, 40));
 
@@ -59,21 +59,21 @@ async fn main(spawner: Spawner) {
         frame.draw(&mut display, sprite.position).unwrap();
         display.write_display().await;
 
-        // Advance and revert if animation ends
-        sprite.update(0);
+        // Animate and revert if needed
+        sprite.update(0); // 0 = idle
 
-        // Handle input
+        // Input handling
         if let Ok(event) = button_channel.try_receive() {
-            match event {
-                ButtonEvent {
-                    id: ButtonId::Left,
-                    state: ButtonState::Pressed,
-                } => sprite.trigger(1),
-                ButtonEvent {
-                    id: ButtonId::Right,
-                    state: ButtonState::Pressed,
-                } => sprite.trigger(2),
-                _ => {}
+            if event.state == ButtonState::Pressed {
+                match event.id {
+                    ButtonId::Left => sprite.trigger(1),
+                    ButtonId::Right => sprite.trigger(2),
+                    ButtonId::DLeft => sprite.move_by(-5, 0),
+                    ButtonId::DRight => sprite.move_by(5, 0),
+                    ButtonId::DUp => sprite.move_by(0, -5),
+                    ButtonId::DDown => sprite.move_by(0, 5),
+                    _ => {}
+                }
             }
         }
 
