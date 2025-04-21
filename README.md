@@ -47,14 +47,6 @@ For support, join our discord:
 
 [![Discord](https://img.shields.io/discord/1172988360063725629?label=Join%20us%20on%20Discord&logo=discord&style=flat&color=5865F2)](https://discord.gg/d65Xfdjp)
 
-# Features
- - Display driver
-    - Supports embedded graphics library
-    - Supports text rendering (examples/hello_world.rs)
-    - Supports image rendering (examples/display_image.rs)
- - Button interface
-    - Async message queue or polling support (examples/button_test_async.rs and examples/button_test_polling.rs)
-
 # Rust docs
 https://koinslot-inc.github.io/kywy-rust/kywy/
 
