@@ -181,6 +181,9 @@ impl<'a> SpriteInstance<'a> {
     pub fn trigger(&mut self, index: usize) {
         if index < self.animations.len() {
             self.active_index = index;
+            let anim = self.current_mut();
+            anim.current_frame = 0;
+            anim.finished = false;
         }
     }
 }

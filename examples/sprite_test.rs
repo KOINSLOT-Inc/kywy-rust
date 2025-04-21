@@ -15,7 +15,7 @@ use embassy_time::{Duration, Timer};
 use embedded_graphics::{pixelcolor::BinaryColor, prelude::*};
 use heapless::Vec;
 use kywy::{
-    button_async::{ButtonEvent, ButtonId, ButtonState},
+    button_async::{ButtonId, ButtonState},
     engine::sprite::{Animation, SpriteInstance, SpriteSheet},
     kywy_button_async_from, kywy_display_from, kywy_spi_from,
 };
