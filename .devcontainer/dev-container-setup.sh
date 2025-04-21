@@ -2,8 +2,10 @@
 
 # Update and install common tools
 sudo apt-get update
-sudo apt-get install -y imagemagick
-cargo install elf2uf2-rs
+sudo apt-get install -y imagemagick imagemagick-6.q16 # image magick for image manipulation
+sudo apt-get install -y pkg-config libudev-dev # rust/cargo dependencies
+
+cargo install elf2uf2-rs # elf2uf2 for producing uf2 files
 
 # Clean up
 sudo apt-get clean
