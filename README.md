@@ -66,7 +66,9 @@ To do:
 
 
 # Build examples
-This repo supports vscode environments and code spaces [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/KOINSLOT-Inc/kywy-rust/)
+This repo supports vscode environments and code spaces 
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/KOINSLOT-Inc/kywy-rust/)
 
 
 To build this run:
