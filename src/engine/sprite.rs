@@ -150,7 +150,7 @@ pub struct SpriteInstance<'a> {
 
 impl<'a> SpriteInstance<'a> {
     pub fn move_by(&mut self, dx: i32, dy: i32) {
-        self.position = self.position + Point::new(dx, dy);
+        self.position += Point::new(dx, dy);
     }
     pub fn update(&mut self, default_index: usize) {
         self.advance();
