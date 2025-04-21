@@ -13,7 +13,7 @@ sudo rm -rf /var/lib/apt/lists/*
 cargo clean
 
 # Set build target to thumbv6m-none-eabi
-echo '[build]\\ntarget = \"thumbv6m-none-eabi\"' > .cargo/config.toml"
+echo "'[build]\\ntarget = \"thumbv6m-none-eabi\"' > .cargo/config.toml"
 
 # Let user know we are ready
 echo "Container Setup Complete"
