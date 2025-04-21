@@ -9,9 +9,11 @@ use embedded_graphics::geometry::{Point, Size};
 use embedded_graphics::image::{Image, ImageRaw};
 use embedded_graphics::pixelcolor::BinaryColor;
 use embedded_graphics::prelude::*;
+use heapless::Vec;
 use tinybmp::{Bmp, ParseError};
 
 /// A sprite sheet made from a BMP image
+#[derive(Debug)]
 pub struct SpriteSheet<'a> {
     bmp: Bmp<'a, BinaryColor>,
     sprite_size: Size,
@@ -95,6 +97,7 @@ impl<'a> Sprite<'a> {
     }
 }
 
+#[derive(Clone, Copy, Debug)]
 pub struct Animation<'a> {
     pub sheet: &'a SpriteSheet<'a>, // reference to the sprite sheet
     pub frames: &'a [(u32, u32)],   // list of (index_x, index_y) for frames
@@ -115,10 +118,6 @@ impl<'a> Animation<'a> {
     }
 
     pub fn advance(&mut self) {
-        if self.finished {
-            return;
-        }
-
         self.current_frame += 1;
         if self.current_frame >= self.frames.len() {
             if self.looped {
@@ -141,5 +140,48 @@ impl<'a> Animation<'a> {
 
     pub fn is_finished(&self) -> bool {
         self.finished
+    }
+}
+
+pub struct SpriteInstance<'a> {
+    pub animations: Vec<Animation<'a>, 4>,
+    pub active_index: usize,
+    pub position: Point,
+}
+
+impl<'a> SpriteInstance<'a> {
+    pub fn update(&mut self, default_index: usize) {
+        self.advance();
+        if !self.current().looped && self.current().is_finished() {
+            self.trigger(default_index);
+        }
+    }
+    pub fn new(animations: Vec<Animation<'a>, 4>, position: Point) -> Self {
+        Self {
+            animations,
+            active_index: 0,
+            position,
+        }
+    }
+
+    pub fn current(&self) -> &Animation<'a> {
+        &self.animations[self.active_index]
+    }
+
+    pub fn current_mut(&mut self) -> &mut Animation<'a> {
+        &mut self.animations[self.active_index]
+    }
+
+    pub fn advance(&mut self) {
+        self.current_mut().advance();
+    }
+
+    pub fn trigger(&mut self, index: usize) {
+        if index < self.animations.len() {
+            self.active_index = index;
+            let anim = self.current_mut();
+            anim.current_frame = 0;
+            anim.finished = false;
+        }
     }
 }

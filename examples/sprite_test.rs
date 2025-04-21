@@ -14,40 +14,69 @@ use defmt_rtt as _;
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
 use embedded_graphics::{pixelcolor::BinaryColor, prelude::*};
+use heapless::Vec;
 use kywy::{
-    engine::sprite::{Animation, SpriteSheet},
-    kywy_display_from, kywy_spi_from,
+    button_async::{ButtonEvent, ButtonId, ButtonState},
+    engine::sprite::{Animation, SpriteInstance, SpriteSheet},
+    kywy_button_async_from, kywy_display_from, kywy_spi_from,
 };
 use panic_probe as _;
 
 #[embassy_executor::main]
-async fn main(_spawner: Spawner) {
-    info!("Sprite test starting");
+async fn main(spawner: Spawner) {
+    info!("Sprite test with multi-button input");
 
     let p = embassy_rp::init(Default::default());
-
     kywy_spi_from!(p => spi_bus);
     kywy_display_from!(spi_bus, p => display);
+    kywy_button_async_from!(&spawner, p => button_channel);
+
     display.initialize().await;
     display.enable();
 
-    static SPRITE_DATA: &[u8] = include_bytes!("../examples/Art Assets/monsters/electric.bmp"); // pulls sprite sheet image
+    static SPRITE_DATA: &[u8] = include_bytes!("../examples/Art Assets/monsters/electric.bmp");
+    let sheet = SpriteSheet::new(SPRITE_DATA, Size::new(64, 64)).unwrap();
 
-    let sheet = SpriteSheet::new(SPRITE_DATA, Size::new(64, 64)).unwrap(); // defines the sprite sheet from raw image
+    let idle: &[(u32, u32)] = &[(0, 0), (1, 0), (2, 0)];
+    let left_trigger: &[(u32, u32)] = &[(0, 1), (1, 1), (2, 1)];
+    let right_trigger: &[(u32, u32)] = &[(0, 2), (1, 2), (2, 2)];
 
-    let frames: &[(u32, u32)] = &[(0, 0), (1, 0), (2, 0)]; // defines the frames of the animation from the sprite sheet
-    let mut animation = Animation::new(&sheet, frames, true); // creates an animation from the frames
+    let mut animations: Vec<_, 4> = Vec::new();
+    animations.push(Animation::new(&sheet, idle, true)).unwrap(); // index 0
+    animations
+        .push(Animation::new(&sheet, left_trigger, false))
+        .unwrap(); // index 1
+    animations
+        .push(Animation::new(&sheet, right_trigger, false))
+        .unwrap(); // index 2
+
+    let mut sprite = SpriteInstance::new(animations, Point::new(40, 40));
 
     loop {
-        // let (fx, fy) = animation.current_frame_loc(); // get coordinates of the current frame
-        // let sprite = sheet.sprite(fx, fy).unwrap(); // get the sprite at the current frame
-        let sprite = animation.current_frame_sprite().unwrap();
-
+        // Draw current frame
+        let frame = sprite.current().current_frame_sprite().unwrap();
         display.clear(BinaryColor::On).unwrap();
-        sprite.draw(&mut display, Point::new(40, 40)).unwrap(); // draw the sprite we just got for this frame
+        frame.draw(&mut display, sprite.position).unwrap();
         display.write_display().await;
 
-        animation.advance();
-        Timer::after(Duration::from_millis(200)).await;
+        // Advance and revert if animation ends
+        sprite.update(0);
+
+        // Handle input
+        if let Ok(event) = button_channel.try_receive() {
+            match event {
+                ButtonEvent {
+                    id: ButtonId::Left,
+                    state: ButtonState::Pressed,
+                } => sprite.trigger(1),
+                ButtonEvent {
+                    id: ButtonId::Right,
+                    state: ButtonState::Pressed,
+                } => sprite.trigger(2),
+                _ => {}
+            }
+        }
+
+        Timer::after(Duration::from_millis(100)).await;
     }
 }
