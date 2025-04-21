@@ -164,7 +164,7 @@ impl<SPI> OriginDimensions for KywyDisplay<'_, SPI> {
     }
 }
 
-impl<'a, SPI> DrawTarget for KywyDisplay<'a, SPI>
+impl<SPI> DrawTarget for KywyDisplay<'_, SPI>
 where
     SPI: SpiDevice,
 {
