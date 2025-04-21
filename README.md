@@ -3,13 +3,45 @@ SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
 
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
+<h1 align='center'>
+  Kywy Rust Support
+</h1>
 
-# Rust library for Kywy devices
+<p align='center'><i>
+  the tiny game device with big possibilities: education, game dev, diy electronics, and more
+</i></p>
+
+<p align='center'>
+  <a href="https://linktr.ee/koinslotkywy"><img alt="Linktree" src="https://img.shields.io/badge/linktree-39E09B?style=for-the-badge&logo=linktree&logoColor=white" /></a>
+  &nbsp;
+  <a href="https://discord.gg/zAYym57Fy6"><img alt="Discord" src="https://img.shields.io/discord/1172988360063725629?style=for-the-badge&logo=discord" /></a>
+  &nbsp;
+  <a href="https://kywy.io/"><img alt="Website" src="https://img.shields.io/badge/website-000000?style=for-the-badge&logo=About.me&logoColor=white" /></a>
+  &nbsp;
+  <a href="https://www.instagram.com/kywy.io"><img alt="Store" src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" /></a>
+</p>
+<br />
+
+# What is Kywy?
+
+<p align='center'><img alt="Front and back render of a Kywy device" src="https://github.com/KOINSLOT-Inc/kywy/blob/main/assets/kywy_front_back_render.png"/></p>
+
+The hardware features:
+
+* a 144x168 LCD screen
+* two buttons plus a joystick
+* SD card slot
+* all day battery life
+* I/O: USB-C, GPIO headers, and I2C
+
+The software is designed to give you easy and intuitive access to all of those with only a few lines of code.
+
+# Where to buy
 Get a kywy at https://kywy.io
 
-Kywy is a small, low-cost, low-power, open-source, microcontroller board with a sharp memory display, a 5-way joystick, two side button, a USB-C connector, a qwiic I2C interface, SPI/GPIO expansion pins and a microSD card slot all in a small keychain package. It is designed to be easy to use and program, and is perfect for learning embedded programming, creating small games, or building into your projects.
+# Rust library for Kywy devices
 
-This is an rust library for building out rust programs on the Kywy device. You can also find the C++/Arduino library at https://github.com/KOINSLOT-Inc/kywy or in the Ardiuno library manager.
+This is an rust library for building out rust programs on the Kywy device it is currently experimental. You can also find the C++/Arduino library at https://github.com/KOINSLOT-Inc/kywy or in the Ardiuno library manager.
 
 For support, join our discord: 
 
