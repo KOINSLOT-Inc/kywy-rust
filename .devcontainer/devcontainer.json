@@ -4,7 +4,7 @@
 		"ghcr.io/devcontainers/features/rust:1": {
 			"version": "latest",
 			"profile": "complete",
-			"targets": "thumbv6-none-eabi"
+			"targets": "thumbv6m-none-eabi"
 		}
 	}
 }
