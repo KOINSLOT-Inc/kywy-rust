@@ -61,7 +61,7 @@ pub struct Sprite<'a> {
     offset: Point,
 }
 
-impl<'a> Sprite<'a> {
+impl Sprite<'_> {
     pub fn draw<D>(&self, target: &mut D, pos: Point) -> Result<(), D::Error>
     where
         D: DrawTarget<Color = BinaryColor>,
