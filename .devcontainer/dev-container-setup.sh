@@ -13,14 +13,6 @@ cargo install elf2uf2-rs # elf2uf2 for producing uf2 files
 # Install ImageMagick
 sudo apt-get install -y build-essential pkg-config libx11-dev libxext-dev zlib1g-dev
 
-git clone https://github.com/ImageMagick/ImageMagick.git ~/ImageMagick
-cd ~/ImageMagick
-./configure --prefix=/usr/local
-make -j$(nproc)
-sudo make install
-sudo ldconfig
-
-
 # Clean up to save space
 sudo apt-get clean
 sudo rm -rf /var/lib/apt/lists/*
