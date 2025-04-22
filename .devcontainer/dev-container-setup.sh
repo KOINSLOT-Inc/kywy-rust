@@ -2,7 +2,7 @@
 
 # Setup environment and add scripts to path
 chmod +x .devcontainer/scripts/*.sh
-echo 'export PATH="$PATH:/workspaces/kywy-rust/scripts"' >> ~/.bashrc
+echo 'export PATH="$PATH:/workspaces/kywy-rust/.devcontainer/scripts"' >> ~/.bashrc
 
 # Update and install common tools
 sudo apt-get update
