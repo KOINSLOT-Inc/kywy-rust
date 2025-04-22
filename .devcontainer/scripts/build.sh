@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 <example-name>"
+  exit 1
+fi
+
+EXAMPLE="$1"
+TARGET_DIR="/workspace/kywy-rust/target/thumbv6m-none-eabi/release/examples"
+OUT_DIR="/target"
+
+echo "🔧 Building example: $EXAMPLE"
+cargo build --release --target thumbv6m-none-eabi --example "$EXAMPLE"
+
+echo "⚙️ Converting to UF2"
+elf2uf2-rs "$TARGET_DIR/$EXAMPLE"
+
+echo "📦 Copying UF2 to: $OUT_DIR"
+mkdir -p "$OUT_DIR"
+cp "$TARGET_DIR/$EXAMPLE.uf2" "$OUT_DIR/"
+
+echo "✅ Done: $OUT_DIR/$EXAMPLE.uf2"
