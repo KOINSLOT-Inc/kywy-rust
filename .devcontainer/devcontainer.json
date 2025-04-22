@@ -5,6 +5,10 @@
 			"version": "latest",
 			"profile": "complete",
 			"targets": "thumbv6m-none-eabi"
+		},
+		"ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
+			"plugins": "ssh-agent npm",
+			"omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions"
 		}
 	},
 	"postCreateCommand": "bash .devcontainer/dev-container-setup.sh",
