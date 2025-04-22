@@ -1,6 +1,30 @@
-git clone https://github.com/ImageMagick/ImageMagick.git ~/ImageMagick
-cd ~/ImageMagick
+#!/bin/bash
+set -e  # Exit immediately on error
+
+# Check if ImageMagick is already installed
+if command -v convert >/dev/null 2>&1; then
+    echo "ImageMagick is already installed."
+    exit 0
+fi
+
+# Save current directory
+pushd ~ >/dev/null
+
+# Clone if not already cloned
+if [ ! -d "ImageMagick" ]; then
+    git clone https://github.com/ImageMagick/ImageMagick.git
+fi
+
+# Build and install
+cd ImageMagick
 ./configure --prefix=/usr/local
-make -j$(nproc)
+make -j"$(nproc)"
 sudo make install
 sudo ldconfig
+
+# Clean up
+cd ..
+rm -rf ImageMagick
+
+# Restore original directory
+popd >/dev/null
