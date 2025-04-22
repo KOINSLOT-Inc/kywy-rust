@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Setup environment and add scripts to path
+chmod +x .devcontainer/scripts/*.sh
+echo \"export PATH=\\$PATH:/workspaces/$(basename $PWD)/.devcontainer/scripts\" >> ~/.bashrc
+
 # Update and install common tools
 sudo apt-get update
 sudo apt-get install -y imagemagick imagemagick-6.q16 # image magick for image manipulation
