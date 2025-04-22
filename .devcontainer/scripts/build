@@ -7,7 +7,7 @@ if [ -z "$1" ]; then
 fi
 
 EXAMPLE="$1"
-TARGET_DIR="/workspace/kywy-rust/target/thumbv6m-none-eabi/release/examples"
+TARGET_DIR="/workspace/kywy-rust/target/thumbv6m-none-eabi/examples"
 OUT_DIR="/output"
 
 echo "🔧 Building example: $EXAMPLE"
