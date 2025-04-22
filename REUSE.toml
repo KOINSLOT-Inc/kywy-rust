@@ -1,0 +1,63 @@
+version = 1
+
+[[annotations]]
+path = "**/**.bmp"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2023-2025 KOINSLOT Inc."
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ".github/workflows/rust.yml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "None"
+SPDX-License-Identifier = "LicenseRef-Excluded"
+SPDX-FileComment = "Workflow file, not subject to licensing."
+
+[[annotations]]
+path = ".github/workflows/rust-clippy.yaml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "None"
+SPDX-License-Identifier = "LicenseRef-Excluded"
+SPDX-FileComment = "Boilerplate rust-clippy.yaml config for linting"
+
+[[annotations]]
+path = ".github/workflows/cargo-publish.yml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "None"
+SPDX-License-Identifier = "LicenseRef-Excluded"
+SPDX-FileComment = "Simple workflow file for publishing to crates.io"
+
+[[annotations]]
+path = ".gitignore"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "None"
+SPDX-License-Identifier = "LicenseRef-Excluded"
+SPDX-FileComment = "Ignored files listing, not subject to reuse licensing."
+
+[[annotations]]
+path = "Cargo.lock"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "None"
+SPDX-License-Identifier = "LicenseRef-Excluded"
+SPDX-FileComment = "Auto-generated file, excluded from license checks."
+
+[[annotations]]
+path = "Cargo.toml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "None"
+SPDX-License-Identifier = "LicenseRef-Excluded"
+SPDX-FileComment = "Declares metadata, not subject to reuse licensing."
+
+[[annotations]]
+path = "build.rs"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "None"
+SPDX-License-Identifier = "LicenseRef-Excluded"
+SPDX-FileComment = "Build script, excluded per project policy."
+
+[[annotations]]
+path = "memory.x"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "None"
+SPDX-License-Identifier = "LicenseRef-Excluded"
+SPDX-FileComment = "Linker script, excluded from licensing requirements."
