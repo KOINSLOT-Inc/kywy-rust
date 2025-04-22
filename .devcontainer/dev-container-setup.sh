@@ -11,8 +11,8 @@ echo 'export PATH="$PATH:/workspaces/kywy-rust/.devcontainer/scripts"' >> ~/.zsh
 
 # Welcome Message
 chmod +x .devcontainer/welcome-message.sh
-echo 'source /workspaces/kywy/.devcontainer/welcome-message.sh' >> ~/.bashrc
-echo 'source /workspaces/kywy/.devcontainer/welcome-message.sh' >> ~/.zshrc
+echo 'source /workspaces/kywy-rust/.devcontainer/welcome-message.sh' >> ~/.bashrc
+echo 'source /workspaces/kywy-rust/.devcontainer/welcome-message.sh' >> ~/.zshrc
 
 # Update and install common tools
 sudo apt-get update
