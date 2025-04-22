@@ -68,7 +68,7 @@ To do:
 # Build examples
 This repo supports vscode environments and code spaces 
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?repo=KOINSLOT-Inc/kywy-rust&location=EastUs)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?repo=KOINSLOT-Inc/kywy-rust)
 
 To build this run:
 `cargo build --release --target thumbv6m-none-eabi --example <example_name>`
