@@ -8,7 +8,4 @@
 		}
 	},
 	"postCreateCommand": "bash .devcontainer/dev-container-setup.sh",
-	"remoteEnv": {
-	  "PATH": "${PATH}:/workspaces/kywy-rust/.devcontainer/scripts"
-	}
 }
