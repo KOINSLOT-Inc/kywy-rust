@@ -7,5 +7,5 @@
 			"targets": "thumbv6m-none-eabi"
 		}
 	},
-	"postCreateCommand": "bash .devcontainer/dev-container-setup.sh",
+	"postCreateCommand": "chmod +x .devcontainer/scripts/*.sh && echo \"export PATH=\\$PATH:/workspaces/$(basename $PWD)/.devcontainer/scripts\" >> ~/.bashrc && bash .devcontainer/dev-container-setup.sh",
 }
