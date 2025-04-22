@@ -1,0 +1,16 @@
+#!/bin/bash
+# SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+YEAR=$(date +%Y)
+AUTHOR="KOINSLOT Inc."
+
+reuse lint --json |
+jq -r '.non_compliant.missing_licensing_info[]' |
+while read -r file; do
+  echo "Fixing $file"
+  reuse annotate \
+    --license GPL-3.0-or-later \
+    --copyright "$YEAR $AUTHOR" \
+    "$file"
+done

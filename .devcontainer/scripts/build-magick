@@ -1,4 +1,6 @@
 #!/bin/bash
+# SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
+# SPDX-License-Identifier: GPL-3.0-or-later
 set -e  # Exit immediately on error
 
 # Check if ImageMagick is already installed
