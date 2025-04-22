@@ -1,0 +1,11 @@
+{
+	"image": "mcr.microsoft.com/devcontainers/universal:2",
+	"features": {
+		"ghcr.io/devcontainers/features/rust:1": {
+			"version": "latest",
+			"profile": "complete",
+			"targets": "thumbv6m-none-eabi"
+		},
+	},
+	"postCreateCommand": "bash .devcontainer/dev-container-setup.sh",
+}
