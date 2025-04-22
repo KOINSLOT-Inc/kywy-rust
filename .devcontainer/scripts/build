@@ -8,7 +8,7 @@ fi
 
 EXAMPLE="$1"
 TARGET_DIR="/workspace/kywy-rust/target/thumbv6m-none-eabi/release/examples"
-OUT_DIR="/target"
+OUT_DIR="/output"
 
 echo "🔧 Building example: $EXAMPLE"
 cargo build --release --target thumbv6m-none-eabi --example "$EXAMPLE"
