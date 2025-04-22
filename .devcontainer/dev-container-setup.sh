@@ -20,6 +20,7 @@ sudo apt-get install -y build-essential pkg-config libx11-dev libxext-dev zlib1g
 sudo apt-get clean
 sudo rm -rf /var/lib/apt/lists/*
 cargo clean
+pip cache purge
 
 # Let user know we are ready
 echo "Container Setup Complete"
