@@ -9,6 +9,6 @@
 	},
 	"postCreateCommand": "bash .devcontainer/dev-container-setup.sh",
 	"remoteEnv": {
-	  "PATH": "${PATH}:/workspaces/${localWorkspaceFolderBasename}/.devcontainer/scripts"
+	  "PATH": "${PATH}:/workspaces/kywy-rust/.devcontainer/scripts"
 	}
 }
