@@ -58,7 +58,7 @@ async fn main(spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
     kywy_spi_from!(p => spi_bus);
     kywy_display_from!(spi_bus, p => display);
-
+    display.initialize();
     display.enable();
 
     kywy_button_async_from!(&spawner, p => buttons);

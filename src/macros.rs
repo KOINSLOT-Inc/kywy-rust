@@ -74,8 +74,8 @@ macro_rules! kywy_button_async_from {
     ($spawner:expr, $peripherals:ident => $var:ident) => {
         let mut $var = $crate::button_async::init(
             $spawner,
-            $peripherals.PIN_12.into_ref(), // Button: Right
-            $peripherals.PIN_2.into_ref(),  // Button: Left
+            $peripherals.PIN_12.into_ref(), // Button: Left
+            $peripherals.PIN_2.into_ref(),  // Button: Right
             $peripherals.PIN_9.into_ref(),  // Button: DUp
             $peripherals.PIN_3.into_ref(),  // Button: DDown
             $peripherals.PIN_6.into_ref(),  // Button: DLeft
@@ -89,8 +89,8 @@ macro_rules! kywy_button_async_from {
 macro_rules! kywy_button_poll_from {
     ($peripherals:ident => $var:ident) => {
         let $var = $crate::button_poll::ButtonPoller::new(
-            $peripherals.PIN_2.into_ref(),  // Button: Left
-            $peripherals.PIN_12.into_ref(), // Button: Right
+            $peripherals.PIN_12.into_ref(), // Button: Left
+            $peripherals.PIN_2.into_ref(),  // Button: Right
             $peripherals.PIN_9.into_ref(),  // Button: DUp
             $peripherals.PIN_3.into_ref(),  // Button: DDown
             $peripherals.PIN_6.into_ref(),  // Button: DLeft
@@ -103,12 +103,13 @@ macro_rules! kywy_button_poll_from {
 #[macro_export]
 macro_rules! kywy_battery_from {
     ($peripherals:ident => $battery_var:ident) => {
+        use embedded_graphics::geometry::Point;
         let mut $battery_var = $crate::battery::BatteryMonitor::new(
-            $peripherals.PIN_26,
-            $peripherals.PIN_10,
-            $peripherals.PIN_11,
-            $peripherals.ADC,
-            embedded_graphics::geometry::Point::new(125, 0), // default battery location
+            $peripherals.PIN_26.into_ref(),
+            $peripherals.PIN_10.into_ref(),
+            $peripherals.PIN_11.into_ref(),
+            $peripherals.ADC.into_ref(),
+            Point::new(125, 0), // default battery location
             embedded_graphics::pixelcolor::BinaryColor::Off,
         )
         .await;

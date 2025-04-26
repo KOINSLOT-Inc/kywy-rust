@@ -140,8 +140,8 @@ impl GameState {
 
         let mut rng = SmallRng::seed_from_u64(seed);
         let food = Position {
-            x: rng.gen_range(0..GRID_WIDTH),
-            y: rng.gen_range(0..GRID_HEIGHT),
+            x: rng.random_range(0..GRID_WIDTH),
+            y: rng.random_range(0..GRID_HEIGHT),
         };
 
         Self {
@@ -198,8 +198,8 @@ impl GameState {
     fn spawn_food(&mut self) {
         loop {
             let pos = Position {
-                x: self.rng.gen_range(0..GRID_WIDTH),
-                y: self.rng.gen_range(0..GRID_HEIGHT),
+                x: self.rng.random_range(0..GRID_WIDTH),
+                y: self.rng.random_range(0..GRID_HEIGHT),
             };
             if !self.snake.body.contains(&pos) {
                 self.food = pos;
@@ -260,7 +260,6 @@ async fn main(spawner: Spawner) {
 
     kywy_spi_from!(p => spi_bus);
     kywy_display_from!(spi_bus, p => display);
-    kywy_button_async_from!(&spawner, p => button_channel);
 
     let style = MonoTextStyle::new(&FONT_6X10, BinaryColor::Off);
     display.initialize().await;
@@ -272,8 +271,7 @@ async fn main(spawner: Spawner) {
     image.draw(&mut display).unwrap();
     display.write_display().await;
     Timer::after(Duration::from_millis(200)).await;
-
-    button_channel.clear();
+    kywy_button_async_from!(&spawner, p => button_channel);
     let _: ButtonEvent = button_channel.receive().await; // Wait for any button press
 
     let held = ButtonHeldState::default();

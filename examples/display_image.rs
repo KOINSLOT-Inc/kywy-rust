@@ -15,6 +15,7 @@ use embassy_executor;
 use embassy_time::{Duration, Timer};
 use embedded_graphics::{image::Image, pixelcolor::BinaryColor, prelude::*};
 use kywy::kywy_display_from;
+use kywy::kywy_spi_from;
 use panic_probe as _;
 use tinybmp::Bmp;
 
