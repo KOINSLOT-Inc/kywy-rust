@@ -94,7 +94,12 @@ You can now copy the UF2 to the USB storage device.
 (Plan to improve this procedure in the future to support arduino style programming)
 
 # Including as a crate
-Now on crates.io: https://crates.io/crates/kywy
+![Crates.io Version](https://img.shields.io/crates/v/kywy)
+
+use this to add kywy to a rust project:
+<pre><code id="code-block">cargo add kywy</code></pre>
+<button onclick="navigator.clipboard.writeText(document.getElementById('code-block').innerText)"></button>
+You will need additional setup files, it may be easier to git clone this repo and make a new example file in it.
 
 # Editing your own
 You can add an example to build directly from this repository by creating or modifying a file in the examples directory.
