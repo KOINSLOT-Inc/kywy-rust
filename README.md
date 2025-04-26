@@ -82,6 +82,17 @@ you can install elf2uf2-rs by running:
 
 UF2 file will then be in the directory 'target/thumbv6m-none-eabi/release/examples/'
 
+# Uploading
+Note that this rust library does not support automatic rebooting into programming mode like arduino.
+You must put the device into programming mode manually:
+1. Turn off and unplug the device
+2. Use a paper clip to press and hold the reset button on the back to the right of the kywy logo
+3. while holding insert the USB
+4. wait a second and you should see a usb device. You can now release the button
+
+You can now copy the UF2 to the USB storage device.
+(Plan to improve this procedure in the future to support arduino style programming)
+
 # Including as a crate
 Now on crates.io: https://crates.io/crates/kywy
 
