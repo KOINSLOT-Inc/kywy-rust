@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"macro":["kywy_battery_from","kywy_button_async_from","kywy_button_poll_from","kywy_display_from","kywy_spi_from"],"mod":["battery","button_async","button_poll","display","macros","sdcard"]};
+window.SIDEBAR_ITEMS = {"macro":["kywy_battery_from","kywy_button_async_from","kywy_button_poll_from","kywy_display_from","kywy_serial_usb_from","kywy_spi_from"],"mod":["battery","button_async","button_poll","display","macros","sdcard"]};
