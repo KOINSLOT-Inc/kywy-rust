@@ -267,7 +267,6 @@ async fn main(spawner: Spawner) {
 
     kywy_spi_from!(p => spi_bus);
     kywy_display_from!(spi_bus, p => display);
-    kywy_button_async_from!(&spawner, p => button_channel);
 
     let style = MonoTextStyle::new(&FONT_6X10, BinaryColor::Off);
     display.initialize().await;
@@ -279,8 +278,7 @@ async fn main(spawner: Spawner) {
     image.draw(&mut display).unwrap();
     display.write_display().await;
     Timer::after(Duration::from_millis(200)).await;
-
-    button_channel.clear();
+    kywy_button_async_from!(&spawner, p => button_channel);
     let _: ButtonEvent = button_channel.receive().await; // Wait for any button press
 
     let held = ButtonHeldState::default();

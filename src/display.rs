@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 //! Kywy Display Driver
 //! Compatable with embedded-graphics DrawTarget
 //! for use with LS013B7DH05
@@ -159,13 +158,13 @@ where
     }
 }
 
-impl<'a, SPI> OriginDimensions for KywyDisplay<'a, SPI> {
+impl<SPI> OriginDimensions for KywyDisplay<'_, SPI> {
     fn size(&self) -> Size {
         Size::new(WIDTH as u32, HEIGHT as u32)
     }
 }
 
-impl<'a, SPI> DrawTarget for KywyDisplay<'a, SPI>
+impl<SPI> DrawTarget for KywyDisplay<'_, SPI>
 where
     SPI: SpiDevice,
 {

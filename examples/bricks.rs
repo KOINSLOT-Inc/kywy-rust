@@ -26,6 +26,11 @@ use embedded_graphics::{
     primitives::{PrimitiveStyle, Rectangle},
     text::Text,
 };
+use embedded_text::{
+    TextBox,
+    alignment::HorizontalAlignment,
+    style::{HeightMode, TextBoxStyleBuilder},
+};
 
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::ThreadModeRawMutex;
@@ -58,7 +63,7 @@ async fn main(spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
     kywy_spi_from!(p => spi_bus);
     kywy_display_from!(spi_bus, p => display);
-
+    display.initialize().await;
     display.enable();
 
     kywy_button_async_from!(&spawner, p => buttons);
@@ -266,15 +271,39 @@ fn draw_bricks<D: DrawTarget<Color = BinaryColor>>(display: &mut D, bricks: &[Br
     }
 }
 
+fn draw_message<D: DrawTarget<Color = BinaryColor>>(display: &mut D, msg: &str) {
+    let character_style = MonoTextStyle::new(&FONT_6X10, BinaryColor::Off);
+    let textbox_style = TextBoxStyleBuilder::new()
+        .alignment(HorizontalAlignment::Center)
+        .height_mode(HeightMode::FitToText)
+        .build();
+
+    // Start with zero height so the TextBox can fit to text
+    let bounds = Rectangle::new(Point::zero(), Size::new(SCREEN_WIDTH as u32, 0));
+
+    // Create textbox
+    let text_box = TextBox::with_textbox_style(msg, bounds, character_style, textbox_style);
+
+    // Get size after layout
+    let text_size = text_box.bounding_box().size;
+
+    // Compute offset to center it
+    let offset_x = (SCREEN_WIDTH as i32 - text_size.width as i32) / 2;
+    let offset_y = (SCREEN_HEIGHT as i32 - text_size.height as i32) / 2;
+
+    // Rebuild textbox at new centered position
+    let centered_bounds = Rectangle::new(Point::new(offset_x, offset_y), text_size);
+
+    let centered_text_box =
+        TextBox::with_textbox_style(msg, centered_bounds, character_style, textbox_style);
+
+    let _ = centered_text_box.draw(display);
+}
+
 fn draw_score<D: DrawTarget<Color = BinaryColor>>(display: &mut D, score: u32) {
     let style = MonoTextStyle::new(&FONT_6X10, BinaryColor::Off);
     let msg = format_score(score);
     let _ = Text::new(&msg, Point::new(5, SCREEN_HEIGHT - 2), style).draw(display);
-}
-
-fn draw_message<D: DrawTarget<Color = BinaryColor>>(display: &mut D, msg: &str) {
-    let style = MonoTextStyle::new(&FONT_6X10, BinaryColor::Off);
-    let _ = Text::new(msg, Point::new(20, SCREEN_HEIGHT / 2), style).draw(display);
 }
 
 async fn wait_for_button(
