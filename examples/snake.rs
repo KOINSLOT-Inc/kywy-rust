@@ -19,6 +19,9 @@ use kywy::button_async::{ButtonEvent, ButtonId, ButtonState};
 use kywy::{kywy_button_async_from, kywy_display_from, kywy_spi_from};
 
 use embassy_executor::Spawner;
+use embassy_rp::bind_interrupts;
+use embassy_rp::peripherals::USB;
+use embassy_rp::usb::InterruptHandler;
 use embassy_time::{Duration, Instant, Timer};
 
 use embedded_graphics::{
@@ -251,6 +254,10 @@ impl GameState {
         let _ = Text::new(score_str, Point::new(47, 100), style).draw(display);
     }
 }
+
+bind_interrupts!(struct Irqs {
+    USBCTRL_IRQ => InterruptHandler<USB>;
+});
 
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {

@@ -5,9 +5,14 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Setup environment and add scripts to path
-chmod +x .devcontainer/scripts/*.sh
+chmod +x .devcontainer/scripts/*
 echo 'export PATH="$PATH:/workspaces/kywy-rust/.devcontainer/scripts"' >> ~/.bashrc
 echo 'export PATH="$PATH:/workspaces/kywy-rust/.devcontainer/scripts"' >> ~/.zshrc
+
+# Welcome Message
+chmod +x .devcontainer/welcome-message.sh
+echo 'source /workspaces/kywy-rust/.devcontainer/welcome-message.sh' >> ~/.bashrc
+echo 'source /workspaces/kywy-rust/.devcontainer/welcome-message.sh' >> ~/.zshrc
 
 # Update and install common tools
 sudo apt-get update

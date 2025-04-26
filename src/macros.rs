@@ -69,6 +69,67 @@ macro_rules! kywy_display_from {
     };
 }
 
+// to do: actually write a library that will handle USB tasks to listen
+#[macro_export]
+macro_rules! kywy_serial_usb_from {
+    ($peripherals:ident, $irqs:ident => $usb_var:ident, $serial_var:ident, $usb_fut:ident, $serial_fut:ident) => {{
+        use embassy_rp::peripherals::USB;
+        use embassy_rp::usb::Driver;
+        use embassy_usb::class::cdc_acm::CdcAcmClass;
+        use embassy_usb::class::cdc_acm::State;
+        use embassy_usb::{Builder, Config as USBConfig};
+        use log::info;
+
+        let mut config_descriptor = [0; 256];
+        let mut bos_descriptor = [0; 256];
+        let mut control_buf = [0; 64];
+        let mut state = State::new();
+
+        let driver = Driver::new($peripherals.USB, $irqs);
+
+        let mut config = USBConfig::new(0xc0de, 0xcafe);
+        config.manufacturer = Some("Kywy Devices");
+        config.product = Some("Kywy Serial");
+        config.serial_number = Some("KYWY-0001");
+        config.max_power = 100;
+        config.max_packet_size_0 = 64;
+
+        let mut builder = Builder::new(
+            driver,
+            config,
+            &mut config_descriptor,
+            &mut bos_descriptor,
+            &mut [],
+            &mut control_buf,
+        );
+
+        let mut $serial_var = CdcAcmClass::new(&mut builder, &mut state, 64);
+        let mut $usb_var = builder.build();
+
+        let mut buf = [0; 64];
+
+        let $usb_fut = $usb_var.run();
+
+        let $serial_fut = async {
+            loop {
+                $serial_var.wait_connection().await;
+                info!("Connected");
+                loop {
+                    match $serial_var.read_packet(&mut buf).await {
+                        Ok(n) if n > 0 => {
+                            let _ = $serial_var.write_packet(&buf[..n]).await;
+                        }
+                        _ => {
+                            info!("Disconnected");
+                            break;
+                        }
+                    }
+                }
+            }
+        };
+    }};
+}
+
 #[macro_export]
 macro_rules! kywy_button_async_from {
     ($spawner:expr, $peripherals:ident => $var:ident) => {
