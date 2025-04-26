@@ -82,7 +82,7 @@ you can install elf2uf2-rs by running:
 
 UF2 file will then be in the directory 'target/thumbv6m-none-eabi/release/examples/'
 
-# Uploading
+# Uploading UF2 files
 Note that this rust library does not support automatic rebooting into programming mode like arduino.
 You must put the device into programming mode manually:
 1. Turn off and unplug the device
