@@ -68,7 +68,9 @@ fn spawn_button<P: embassy_rp::gpio::Pin + 'static>(
 ) {
     let mut input = Input::new(pin, Pull::Up);
     input.set_schmitt(true);
-    spawner.spawn(button_task(input, id)).unwrap();
+    if let Err(_e) = spawner.spawn(button_task(input, id)) {
+        defmt::error!("Failed to spawn button task");
+    }
 }
 
 #[embassy_executor::task(pool_size = 7)] // spawns 7 tasks, one for each button
