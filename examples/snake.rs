@@ -19,6 +19,9 @@ use kywy::button_async::{ButtonEvent, ButtonId, ButtonState};
 use kywy::{kywy_button_async_from, kywy_display_from, kywy_spi_from};
 
 use embassy_executor::Spawner;
+use embassy_rp::bind_interrupts;
+use embassy_rp::peripherals::USB;
+use embassy_rp::usb::InterruptHandler;
 use embassy_time::{Duration, Instant, Timer};
 
 use embedded_graphics::{
@@ -140,8 +143,8 @@ impl GameState {
 
         let mut rng = SmallRng::seed_from_u64(seed);
         let food = Position {
-            x: rng.gen_range(0..GRID_WIDTH),
-            y: rng.gen_range(0..GRID_HEIGHT),
+            x: rng.random_range(0..GRID_WIDTH),
+            y: rng.random_range(0..GRID_HEIGHT),
         };
 
         Self {
@@ -198,8 +201,8 @@ impl GameState {
     fn spawn_food(&mut self) {
         loop {
             let pos = Position {
-                x: self.rng.gen_range(0..GRID_WIDTH),
-                y: self.rng.gen_range(0..GRID_HEIGHT),
+                x: self.rng.random_range(0..GRID_WIDTH),
+                y: self.rng.random_range(0..GRID_HEIGHT),
             };
             if !self.snake.body.contains(&pos) {
                 self.food = pos;
@@ -251,6 +254,10 @@ impl GameState {
         let _ = Text::new(score_str, Point::new(47, 100), style).draw(display);
     }
 }
+
+bind_interrupts!(struct Irqs {
+    USBCTRL_IRQ => InterruptHandler<USB>;
+});
 
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
