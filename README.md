@@ -93,8 +93,7 @@ You must put the device into programming mode manually:
 You can now copy the UF2 to the USB storage device.
 (Plan to improve this procedure in the future to support arduino style programming)
 
-# Including as a crate
-![Crates.io Version](https://img.shields.io/crates/v/kywy)
+# Including as a crate frome crates.io [![Crates.io Version](https://img.shields.io/crates/v/kywy)](https://crates.io/crates/kywy)
 
 use this to add kywy to a rust project:
 <pre><code id="code-block">cargo add kywy</code></pre>
