@@ -135,8 +135,8 @@
 <a href=#135 id=135 data-nosnippet>135</a>    (<span class="macro-nonterminal">$spawner</span>:expr, <span class="macro-nonterminal">$peripherals</span>:ident =&gt; <span class="macro-nonterminal">$var</span>:ident) =&gt; {
 <a href=#136 id=136 data-nosnippet>136</a>        <span class="kw">let </span><span class="kw-2">mut </span><span class="macro-nonterminal">$var </span>= <span class="macro-nonterminal">$crate::button_async::init</span>(
 <a href=#137 id=137 data-nosnippet>137</a>            <span class="macro-nonterminal">$spawner</span>,
-<a href=#138 id=138 data-nosnippet>138</a>            <span class="macro-nonterminal">$peripherals</span>.PIN_12.into_ref(), <span class="comment">// Button: Right
-<a href=#139 id=139 data-nosnippet>139</a>            </span><span class="macro-nonterminal">$peripherals</span>.PIN_2.into_ref(),  <span class="comment">// Button: Left
+<a href=#138 id=138 data-nosnippet>138</a>            <span class="macro-nonterminal">$peripherals</span>.PIN_12.into_ref(), <span class="comment">// Button: Left
+<a href=#139 id=139 data-nosnippet>139</a>            </span><span class="macro-nonterminal">$peripherals</span>.PIN_2.into_ref(),  <span class="comment">// Button: Right
 <a href=#140 id=140 data-nosnippet>140</a>            </span><span class="macro-nonterminal">$peripherals</span>.PIN_9.into_ref(),  <span class="comment">// Button: DUp
 <a href=#141 id=141 data-nosnippet>141</a>            </span><span class="macro-nonterminal">$peripherals</span>.PIN_3.into_ref(),  <span class="comment">// Button: DDown
 <a href=#142 id=142 data-nosnippet>142</a>            </span><span class="macro-nonterminal">$peripherals</span>.PIN_6.into_ref(),  <span class="comment">// Button: DLeft
@@ -150,8 +150,8 @@
 <a href=#150 id=150 data-nosnippet>150</a></span><span class="macro">macro_rules!</span> kywy_button_poll_from {
 <a href=#151 id=151 data-nosnippet>151</a>    (<span class="macro-nonterminal">$peripherals</span>:ident =&gt; <span class="macro-nonterminal">$var</span>:ident) =&gt; {
 <a href=#152 id=152 data-nosnippet>152</a>        <span class="kw">let </span><span class="macro-nonterminal">$var </span>= <span class="macro-nonterminal">$crate::button_poll::ButtonPoller::new</span>(
-<a href=#153 id=153 data-nosnippet>153</a>            <span class="macro-nonterminal">$peripherals</span>.PIN_2.into_ref(),  <span class="comment">// Button: Left
-<a href=#154 id=154 data-nosnippet>154</a>            </span><span class="macro-nonterminal">$peripherals</span>.PIN_12.into_ref(), <span class="comment">// Button: Right
+<a href=#153 id=153 data-nosnippet>153</a>            <span class="macro-nonterminal">$peripherals</span>.PIN_12.into_ref(), <span class="comment">// Button: Left
+<a href=#154 id=154 data-nosnippet>154</a>            </span><span class="macro-nonterminal">$peripherals</span>.PIN_2.into_ref(),  <span class="comment">// Button: Right
 <a href=#155 id=155 data-nosnippet>155</a>            </span><span class="macro-nonterminal">$peripherals</span>.PIN_9.into_ref(),  <span class="comment">// Button: DUp
 <a href=#156 id=156 data-nosnippet>156</a>            </span><span class="macro-nonterminal">$peripherals</span>.PIN_3.into_ref(),  <span class="comment">// Button: DDown
 <a href=#157 id=157 data-nosnippet>157</a>            </span><span class="macro-nonterminal">$peripherals</span>.PIN_6.into_ref(),  <span class="comment">// Button: DLeft
@@ -164,14 +164,15 @@
 <a href=#164 id=164 data-nosnippet>164</a><span class="attr">#[macro_export]
 <a href=#165 id=165 data-nosnippet>165</a></span><span class="macro">macro_rules!</span> kywy_battery_from {
 <a href=#166 id=166 data-nosnippet>166</a>    (<span class="macro-nonterminal">$peripherals</span>:ident =&gt; <span class="macro-nonterminal">$battery_var</span>:ident) =&gt; {
-<a href=#167 id=167 data-nosnippet>167</a>        <span class="kw">let </span><span class="kw-2">mut </span><span class="macro-nonterminal">$battery_var </span>= <span class="macro-nonterminal">$crate::battery::BatteryMonitor::new</span>(
-<a href=#168 id=168 data-nosnippet>168</a>            <span class="macro-nonterminal">$peripherals</span>.PIN_26,
-<a href=#169 id=169 data-nosnippet>169</a>            <span class="macro-nonterminal">$peripherals</span>.PIN_10,
-<a href=#170 id=170 data-nosnippet>170</a>            <span class="macro-nonterminal">$peripherals</span>.PIN_11,
-<a href=#171 id=171 data-nosnippet>171</a>            <span class="macro-nonterminal">$peripherals</span>.ADC,
-<a href=#172 id=172 data-nosnippet>172</a>            embedded_graphics::geometry::Point::new(<span class="number">125</span>, <span class="number">0</span>), <span class="comment">// default battery location
-<a href=#173 id=173 data-nosnippet>173</a>            </span>embedded_graphics::pixelcolor::BinaryColor::Off,
-<a href=#174 id=174 data-nosnippet>174</a>        )
-<a href=#175 id=175 data-nosnippet>175</a>        .<span class="kw">await</span>;
-<a href=#176 id=176 data-nosnippet>176</a>    };
-<a href=#177 id=177 data-nosnippet>177</a>}</code></pre></div></section></main></body></html>
+<a href=#167 id=167 data-nosnippet>167</a>        <span class="kw">use </span>embedded_graphics::geometry::Point;
+<a href=#168 id=168 data-nosnippet>168</a>        <span class="kw">let </span><span class="kw-2">mut </span><span class="macro-nonterminal">$battery_var </span>= <span class="macro-nonterminal">$crate::battery::BatteryMonitor::new</span>(
+<a href=#169 id=169 data-nosnippet>169</a>            <span class="macro-nonterminal">$peripherals</span>.PIN_26.into_ref(),
+<a href=#170 id=170 data-nosnippet>170</a>            <span class="macro-nonterminal">$peripherals</span>.PIN_10.into_ref(),
+<a href=#171 id=171 data-nosnippet>171</a>            <span class="macro-nonterminal">$peripherals</span>.PIN_11.into_ref(),
+<a href=#172 id=172 data-nosnippet>172</a>            <span class="macro-nonterminal">$peripherals</span>.ADC.into_ref(),
+<a href=#173 id=173 data-nosnippet>173</a>            Point::new(<span class="number">125</span>, <span class="number">0</span>), <span class="comment">// default battery location
+<a href=#174 id=174 data-nosnippet>174</a>            </span>embedded_graphics::pixelcolor::BinaryColor::Off,
+<a href=#175 id=175 data-nosnippet>175</a>        )
+<a href=#176 id=176 data-nosnippet>176</a>        .<span class="kw">await</span>;
+<a href=#177 id=177 data-nosnippet>177</a>    };
+<a href=#178 id=178 data-nosnippet>178</a>}</code></pre></div></section></main></body></html>
