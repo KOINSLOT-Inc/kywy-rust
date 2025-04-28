@@ -51,7 +51,7 @@ jobs:
 
       - name: Convert ELF to UF2
         run: |
-          mkdir -p artifacts
+          mkdir artifacts
           for f in target/thumbv6m-none-eabi/release/examples/*; do
             [ -f "$f" ] || continue
             filename=$(basename "$f")
