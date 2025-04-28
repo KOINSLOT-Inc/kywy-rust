@@ -71,6 +71,25 @@ jobs:
           name: uf2-artifacts
           path: artifacts/
 
+      - name: Comment UF2 artifact link on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const artifactName = "uf2-artifacts";
+            const runId = context.runId;
+            const repo = context.repo;
+            const artifactsUrl = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${runId}`;
+      
+            const body = `🛠️ Download build artifacts [here](${artifactsUrl}) (look for **${artifactName}**).`;
+      
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: repo.owner,
+              repo: repo.repo,
+              body: body,
+            });
+
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
