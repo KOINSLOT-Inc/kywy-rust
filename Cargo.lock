@@ -685,7 +685,7 @@ dependencies = [
  "embedded-graphics",
  "embedded-layout",
  "embedded-menu-macros",
- "embedded-text 0.7.2",
+ "embedded-text",
 ]
 
 [[package]]
@@ -712,17 +712,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1763775e2323b7d5f0aa6090657f5e21cfa02ede71f5dc40eead06d64dcd15cc"
 dependencies = [
  "embedded-storage",
-]
-
-[[package]]
-name = "embedded-text"
-version = "0.6.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d77f3ba47a72780dbbf243bba7e1004619805211e26f660f243ee163486475e"
-dependencies = [
- "az",
- "embedded-graphics",
- "object-chain",
 ]
 
 [[package]]
@@ -963,7 +952,7 @@ dependencies = [
  "embedded-hal-bus",
  "embedded-iconoir",
  "embedded-menu",
- "embedded-text 0.6.6",
+ "embedded-text",
  "heapless",
  "inverted-pin",
  "itoa",
