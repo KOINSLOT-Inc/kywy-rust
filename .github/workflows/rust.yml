@@ -49,6 +49,25 @@ jobs:
           cargo build --release --example bricks --target thumbv6m-none-eabi
           cargo build --release --example sprite_test --target thumbv6m-none-eabi
 
+      - name: Convert ELF to UF2
+        run: |
+          mkdir -p artifacts
+          for f in target/thumbv6m-none-eabi/release/examples/*; do
+            [ -f "$f" ] || continue
+            filename=$(basename "$f")
+            if [[ "$filename" == *-* || "$filename" == *.* ]]; then
+              echo "Skipping $filename"
+              continue
+            fi
+            elf2uf2-rs "$f" "artifacts/${filename}.uf2"
+          done
+
+      - name: Upload UF2 build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: uf2-artifacts
+          path: artifacts/
+
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
