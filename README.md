@@ -103,6 +103,6 @@ You will need additional setup files, it may be easier to git clone this repo an
 # Editing your own
 You can add an example to build directly from this repository by creating or modifying a file in the examples directory.
 
-to start your own project with minimal configuration, download this repository with 'git clone https://github.com/KOINSLOT-INC/kywy-rust/' you can then add a new example in the examples directory. Build it with the command above in build examples.
+to start your own project with minimal configuration, download this repository with  `git clone https://github.com/KOINSLOT-INC/kywy-rust/` you can then add a new example in the examples directory. Build it with the command above in build examples.
 
 You can also add this to your own project with the following in your Cargo.toml file. However, this library is currently unstable and may not work as expected.
