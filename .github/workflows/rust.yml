@@ -25,10 +25,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1 #@v1
         with:
-          targets: thumbv6m-none-eabi
+          profile: minimal
+          toolchain: stable
+          override: true
+          target: thumbv6m-none-eabi
 
       - name: Install cargo-all-features
         run: cargo install cargo-all-features
