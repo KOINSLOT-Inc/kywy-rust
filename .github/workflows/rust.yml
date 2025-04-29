@@ -35,14 +35,16 @@ jobs:
             target: thumbv6m-none-eabi
           
       - name: Install cargo dependencies
-        run: cargo install cargo-all-features clippy-sarif sarif-fmt elf2uf2-rs
+        run: cargo install cargo-all-features clippy-sarif sarif-fmt 
 
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y libudev-dev
 
+      - name: Install elf2uf2-rs
+        run: cargo installelf2uf2-rs
+
       - name: Test all features
-        run: |
-          cargo check-all-features --target thumbv6m-none-eabi
+        run: cargo check-all-features --target thumbv6m-none-eabi
 
       - name: Run rust-clippy on default features
         run:
