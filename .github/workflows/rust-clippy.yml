@@ -14,6 +14,8 @@
 name: rust-clippy analyze
 
 on:
+  push:
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   schedule:
@@ -32,7 +34,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Rust toolchain
-        uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af #@v1
+        uses: actions-rs/toolchain@v1 #@v1
         with:
           profile: minimal
           toolchain: stable
@@ -50,17 +52,24 @@ jobs:
           --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
         continue-on-error: true
 
-      - name: Run rust-clippy
+      - name: Run rust-clippy on button poll
         run:
           cargo clippy
           --no-default-features
           --features button-poll
           --target thumbv6m-none-eabi
-          --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
+          --message-format=json | clippy-sarif | tee rust-clippy-results-button-poll.sarif | sarif-fmt
         continue-on-error: true
         
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: rust-clippy-results.sarif
+          wait-for-processing: true
+
+      - name: Upload analysis results to GitHub for button-poll
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          category: clippy-button-poll
+          sarif_file: rust-clippy-results-button-poll.sarif
           wait-for-processing: true

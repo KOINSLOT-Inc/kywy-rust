@@ -41,7 +41,7 @@ Get a kywy at https://kywy.io
 
 # Rust library for Kywy devices
 
-This is an rust library for building out rust programs on the Kywy device it is currently experimental. You can also find the C++/Arduino library at https://github.com/KOINSLOT-Inc/kywy or in the Ardiuno library manager.
+This is an rust library for building out rust programs on the Kywy device it is currently experimental. You can also find the C++/Arduino library at https://github.com/KOINSLOT-Inc/kywy or in the Ardiuno library manager https://docs.arduino.cc/libraries/kywy/.
 
 For support, join our discord: 
 
@@ -82,12 +82,39 @@ you can install elf2uf2-rs by running:
 
 UF2 file will then be in the directory 'target/thumbv6m-none-eabi/release/examples/'
 
-# Including as a crate
-Now on crates.io: https://crates.io/crates/kywy
+# Uploading UF2 files
+Note that this rust library does not support automatic rebooting into programming mode like arduino.
+You must put the device into programming mode manually:
+1. Turn off and unplug the device
+2. Use a paper clip to press and hold the reset button on the back to the right of the kywy logo
+3. while holding insert the USB
+4. wait a second and you should see a usb device. You can now release the button
+
+You can now copy the UF2 to the USB storage device.
+(Plan to improve this procedure in the future to support arduino style programming)
+
+# Including as a crate frome crates.io [![Crates.io Version](https://img.shields.io/crates/v/kywy)](https://crates.io/crates/kywy)
+
+use this to add kywy to a rust project:
+<pre><code id="code-block">cargo add kywy</code></pre>
+<button onclick="navigJmlannanator.clipboard.writeText(document.getElementById('code-block').innerText)"></button>
+You will need additional setup files, it may be easier to git clone this repo and make a new example file in it.
 
 # Editing your own
 You can add an example to build directly from this repository by creating or modifying a file in the examples directory.
 
-to start your own project with minimal configuration, download this repository with 'git clone https://github.com/Jmlannan/Kywy-Rust/' you can then add a new example in the examples directory. Build it with the command above in build examples.
+to start your own project with minimal configuration, download this repository with  `git clone https://github.com/KOINSLOT-INC/kywy-rust/` you can then add a new example in the examples directory. Build it with the command above in build examples. 
+
+# Setup rust
+Prerequisites:
+  - Familiarity with using the terminal, installing programs, and using PATH variables
+  - Familiarity with using development tools
+
+If you want an easier method of developing for kywy, check out the arduino library: https://docs.arduino.cc/libraries/kywy/
+
+1. Install rust with rust according to the official documents: [https://rustup.rs](https://www.rust-lang.org/tools/install)
+2. Make sure you set your paths for rust and cargo bin
+3. Install elf2uf2-rs: `cargo install elf2uf2-rs`
+4. Test that elf2uf2-rs is in your path by running elf2uf2-rs
 
 You can also add this to your own project with the following in your Cargo.toml file. However, this library is currently unstable and may not work as expected.

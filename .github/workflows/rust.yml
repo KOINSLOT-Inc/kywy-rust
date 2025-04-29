@@ -12,7 +12,9 @@ on:
       - "Cargo.lock"
 
 permissions:
-  contents: write
+  pull-requests: write
+  contents: read
+
 
 jobs:
   build:
@@ -23,16 +25,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1 #@v1
         with:
-          targets: thumbv6m-none-eabi
+          profile: minimal
+          toolchain: stable
+          override: true
+          target: thumbv6m-none-eabi
 
       - name: Install cargo-all-features
         run: cargo install cargo-all-features
 
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y libudev-dev
+
+      - name: Install elf2uf2-rs
+        run: cargo install elf2uf2-rs
 
       - name: Test all features
         run: |
@@ -48,6 +56,45 @@ jobs:
           cargo build --release --example snake --target thumbv6m-none-eabi
           cargo build --release --example bricks --target thumbv6m-none-eabi
           cargo build --release --example sprite_test --target thumbv6m-none-eabi
+
+      - name: Convert ELF to UF2
+        run: |
+          mkdir artifacts
+          for f in target/thumbv6m-none-eabi/release/examples/*; do
+            [ -f "$f" ] || continue
+            filename=$(basename "$f")
+            if [[ "$filename" == *-* || "$filename" == *.* ]]; then
+              echo "Skipping $filename"
+              continue
+            fi
+            elf2uf2-rs "$f" "artifacts/${filename}.uf2"
+          done
+
+      - name: Upload UF2 build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: uf2-artifacts
+          path: artifacts/
+
+      - name: Comment UF2 artifact link on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const artifactName = "uf2-artifacts";
+            const runId = context.runId;
+            const repo = context.repo;
+            const artifactsUrl = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${runId}`;
+            const commit = context.payload.pull_request.head.sha.slice(0, 7); // short SHA
+      
+            const body = `🛠️ Download build artifacts [here](${artifactsUrl}) (look for **${artifactName}**). \nBuilt from commit \`${commit}\` `;
+      
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: repo.owner,
+              repo: repo.repo,
+              body: body,
+            });
 
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
