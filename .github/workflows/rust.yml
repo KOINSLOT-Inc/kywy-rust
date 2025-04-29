@@ -34,8 +34,8 @@ jobs:
             components: rustfmt, clippy
             target: thumbv6m-none-eabi
           
-      - name: Install cargo-all-features
-        run: cargo install cargo-all-features
+      - name: Install cargo-all-features and deps
+        run: cargo install cargo-all-features clippy-sarif sarif-fmt
 
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y libudev-dev
@@ -47,9 +47,6 @@ jobs:
         run: |
           cargo check-all-features --target thumbv6m-none-eabi
 
-      - name: Install required cargo for clippy
-        run: cargo install clippy clippy-sarif sarif-fmt
-
       - name: Run rust-clippy defaults
         run:
           cargo clippy
@@ -57,7 +54,7 @@ jobs:
           --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
         continue-on-error: true
 
-      - name: Run rust-clippy
+      - name: Run rust-clippy on alt feature button-poll
         run:
           cargo clippy
           --no-default-features
