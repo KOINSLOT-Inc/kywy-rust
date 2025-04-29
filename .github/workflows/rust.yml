@@ -25,11 +25,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af #@v1
         with:
-          targets: thumbv6m-none-eabi
-
+          profile: minimal
+          toolchain: stable
+          components: clippy
+          override: true
+          target: thumbv6m-none-eabi
+          
       - name: Install cargo-all-features
         run: cargo install cargo-all-features
 
@@ -42,6 +46,31 @@ jobs:
       - name: Test all features
         run: |
           cargo check-all-features --target thumbv6m-none-eabi
+
+      - name: Install required cargo for clippy
+        run: cargo install clippy clippy-sarif sarif-fmt
+
+      - name: Run rust-clippy defaults
+        run:
+          cargo clippy
+          --target thumbv6m-none-eabi
+          --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
+        continue-on-error: true
+
+      - name: Run rust-clippy
+        run:
+          cargo clippy
+          --no-default-features
+          --features button-poll
+          --target thumbv6m-none-eabi
+          --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
+        continue-on-error: true
+        
+      - name: Upload clippy analysis results to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: rust-clippy-results.sarif
+          wait-for-processing: true
 
         # Test build examples, does not release
       - name: Test build examples (without releaseing)
