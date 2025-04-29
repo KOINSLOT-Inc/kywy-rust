@@ -135,13 +135,15 @@ macro_rules! kywy_button_async_from {
     ($spawner:expr, $peripherals:ident => $var:ident) => {
         let mut $var = $crate::button_async::init(
             $spawner,
-            $peripherals.PIN_12.into_ref(), // Button: Left
-            $peripherals.PIN_2.into_ref(),  // Button: Right
-            $peripherals.PIN_9.into_ref(),  // Button: DUp
-            $peripherals.PIN_3.into_ref(),  // Button: DDown
-            $peripherals.PIN_6.into_ref(),  // Button: DLeft
-            $peripherals.PIN_7.into_ref(),  // Button: DRight
-            $peripherals.PIN_8.into_ref(),  // Button: DCenter
+            $crate::button_async::ButtonPins {
+                left: $peripherals.PIN_12.into_ref(),
+                right: $peripherals.PIN_2.into_ref(),
+                dup: $peripherals.PIN_9.into_ref(),
+                ddown: $peripherals.PIN_3.into_ref(),
+                dleft: $peripherals.PIN_6.into_ref(),
+                dright: $peripherals.PIN_7.into_ref(),
+                dcenter: $peripherals.PIN_8.into_ref(),
+            },
         );
     };
 }
