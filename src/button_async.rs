@@ -40,23 +40,27 @@ const BUTTON_CHANNEL_CAPACITY: usize = 16;
 static BUTTON_CHANNEL: Channel<ThreadModeRawMutex, ButtonEvent, BUTTON_CHANNEL_CAPACITY> =
     Channel::new();
 
+pub struct ButtonPins {
+    pub left: PeripheralRef<'static, PIN_12>,
+    pub right: PeripheralRef<'static, PIN_2>,
+    pub dup: PeripheralRef<'static, PIN_9>,
+    pub ddown: PeripheralRef<'static, PIN_3>,
+    pub dleft: PeripheralRef<'static, PIN_6>,
+    pub dright: PeripheralRef<'static, PIN_7>,
+    pub dcenter: PeripheralRef<'static, PIN_8>,
+}
+
 pub fn init(
     spawner: &Spawner,
-    pin_left: PeripheralRef<'static, PIN_12>,
-    pin_right: PeripheralRef<'static, PIN_2>,
-    pin_dup: PeripheralRef<'static, PIN_9>,
-    pin_ddown: PeripheralRef<'static, PIN_3>,
-    pin_dleft: PeripheralRef<'static, PIN_6>,
-    pin_dright: PeripheralRef<'static, PIN_7>,
-    pin_dcenter: PeripheralRef<'static, PIN_8>,
+    pins: ButtonPins,
 ) -> &'static Channel<ThreadModeRawMutex, ButtonEvent, BUTTON_CHANNEL_CAPACITY> {
-    spawn_button(spawner, pin_left, ButtonId::Left);
-    spawn_button(spawner, pin_right, ButtonId::Right);
-    spawn_button(spawner, pin_dup, ButtonId::DUp);
-    spawn_button(spawner, pin_ddown, ButtonId::DDown);
-    spawn_button(spawner, pin_dleft, ButtonId::DLeft);
-    spawn_button(spawner, pin_dright, ButtonId::DRight);
-    spawn_button(spawner, pin_dcenter, ButtonId::DCenter);
+    spawn_button(spawner, pins.left, ButtonId::Left);
+    spawn_button(spawner, pins.right, ButtonId::Right);
+    spawn_button(spawner, pins.dup, ButtonId::DUp);
+    spawn_button(spawner, pins.ddown, ButtonId::DDown);
+    spawn_button(spawner, pins.dleft, ButtonId::DLeft);
+    spawn_button(spawner, pins.dright, ButtonId::DRight);
+    spawn_button(spawner, pins.dcenter, ButtonId::DCenter);
 
     &BUTTON_CHANNEL
 }

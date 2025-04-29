@@ -22,6 +22,16 @@ pub enum ButtonId {
     DCenter,
 }
 
+pub struct ButtonPins {
+    pub left: PeripheralRef<'static, PIN_12>,
+    pub right: PeripheralRef<'static, PIN_2>,
+    pub dup: PeripheralRef<'static, PIN_9>,
+    pub ddown: PeripheralRef<'static, PIN_3>,
+    pub dleft: PeripheralRef<'static, PIN_6>,
+    pub dright: PeripheralRef<'static, PIN_7>,
+    pub dcenter: PeripheralRef<'static, PIN_8>,
+}
+
 pub struct ButtonPoller {
     left: Input<'static>,
     right: Input<'static>,
@@ -33,15 +43,7 @@ pub struct ButtonPoller {
 }
 
 impl ButtonPoller {
-    pub fn new(
-        pin_left: PeripheralRef<'static, PIN_12>,
-        pin_right: PeripheralRef<'static, PIN_2>,
-        pin_dup: PeripheralRef<'static, PIN_9>,
-        pin_ddown: PeripheralRef<'static, PIN_3>,
-        pin_dleft: PeripheralRef<'static, PIN_6>,
-        pin_dright: PeripheralRef<'static, PIN_7>,
-        pin_dcenter: PeripheralRef<'static, PIN_8>,
-    ) -> Self {
+    pub fn new(pins: ButtonPins) -> Self {
         fn mk_input<P: embassy_rp::gpio::Pin + 'static>(
             pin: PeripheralRef<'static, P>,
         ) -> Input<'static> {
@@ -51,17 +53,16 @@ impl ButtonPoller {
         }
 
         Self {
-            left: mk_input(pin_left),
-            right: mk_input(pin_right),
-            dup: mk_input(pin_dup),
-            ddown: mk_input(pin_ddown),
-            dleft: mk_input(pin_dleft),
-            dright: mk_input(pin_dright),
-            dcenter: mk_input(pin_dcenter),
+            left: mk_input(pins.left),
+            right: mk_input(pins.right),
+            dup: mk_input(pins.dup),
+            ddown: mk_input(pins.ddown),
+            dleft: mk_input(pins.dleft),
+            dright: mk_input(pins.dright),
+            dcenter: mk_input(pins.dcenter),
         }
     }
 
-    /// Returns `true` if the button is pressed (level is Low)
     pub fn is_pressed(&self, id: ButtonId) -> bool {
         let level = match id {
             ButtonId::Left => self.left.get_level(),
@@ -76,7 +77,6 @@ impl ButtonPoller {
         level == Level::Low
     }
 
-    /// Returns a compact bitfield of all button states
     pub fn poll_all(&self) -> u8 {
         let mut bits = 0u8;
 
