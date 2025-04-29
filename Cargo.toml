@@ -54,7 +54,7 @@ inverted-pin = "1.0.0"
 # Display and bit manipulation
 bitvec = { version = "1.0", default-features = false }
 embedded-graphics = "0.8.1"
-embedded-text = "0.6.1"
+embedded-text = "0.7.2"
 
 # Usb Serial interface for debugging
 embassy-sync = { version = "0.6.0", features = ["defmt"] }
