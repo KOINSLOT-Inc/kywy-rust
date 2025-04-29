@@ -1,4 +1,4 @@
-name: Build check and release if on main
+name: Check or Release
 
 on:
   pull_request:
@@ -17,7 +17,7 @@ permissions:
 
 
 jobs:
-  build:
+  test-and-build:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
 
@@ -34,20 +34,17 @@ jobs:
             components: rustfmt, clippy
             target: thumbv6m-none-eabi
           
-      - name: Install cargo-all-features and deps
-        run: cargo install cargo-all-features clippy-sarif sarif-fmt
+      - name: Install cargo dependencies
+        run: cargo install cargo-all-features clippy-sarif sarif-fmt elf2uf2-rs
 
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y libudev-dev
-
-      - name: Install elf2uf2-rs
-        run: cargo install elf2uf2-rs
 
       - name: Test all features
         run: |
           cargo check-all-features --target thumbv6m-none-eabi
 
-      - name: Run rust-clippy defaults
+      - name: Run rust-clippy on default features
         run:
           cargo clippy
           --target thumbv6m-none-eabi
