@@ -25,14 +25,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Rust toolchain
-        uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af #@v1
+      - name: Install latest stable Rust toolchain
+        uses: actions-rs/toolchain@v1
         with:
-          profile: minimal
-          toolchain: stable
-          components: clippy
-          override: true
-          target: thumbv6m-none-eabi
+            profile: minimal
+            toolchain: stable
+            override: true
+            components: rustfmt, clippy
+            target: thumbv6m-none-eabi
           
       - name: Install cargo-all-features
         run: cargo install cargo-all-features
