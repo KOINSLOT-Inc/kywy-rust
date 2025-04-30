@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["ButtonId"],"struct":["ButtonPoller"]};
+window.SIDEBAR_ITEMS = {"enum":["ButtonId"],"struct":["ButtonPins","ButtonPoller"]};

@@ -22,62 +22,62 @@
 <a href=#22 id=22 data-nosnippet>22</a>    DCenter,
 <a href=#23 id=23 data-nosnippet>23</a>}
 <a href=#24 id=24 data-nosnippet>24</a>
-<a href=#25 id=25 data-nosnippet>25</a><span class="kw">pub struct </span>ButtonPoller {
-<a href=#26 id=26 data-nosnippet>26</a>    left: Input&lt;<span class="lifetime">'static</span>&gt;,
-<a href=#27 id=27 data-nosnippet>27</a>    right: Input&lt;<span class="lifetime">'static</span>&gt;,
-<a href=#28 id=28 data-nosnippet>28</a>    dup: Input&lt;<span class="lifetime">'static</span>&gt;,
-<a href=#29 id=29 data-nosnippet>29</a>    ddown: Input&lt;<span class="lifetime">'static</span>&gt;,
-<a href=#30 id=30 data-nosnippet>30</a>    dleft: Input&lt;<span class="lifetime">'static</span>&gt;,
-<a href=#31 id=31 data-nosnippet>31</a>    dright: Input&lt;<span class="lifetime">'static</span>&gt;,
-<a href=#32 id=32 data-nosnippet>32</a>    dcenter: Input&lt;<span class="lifetime">'static</span>&gt;,
+<a href=#25 id=25 data-nosnippet>25</a><span class="kw">pub struct </span>ButtonPins {
+<a href=#26 id=26 data-nosnippet>26</a>    <span class="kw">pub </span>left: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_12&gt;,
+<a href=#27 id=27 data-nosnippet>27</a>    <span class="kw">pub </span>right: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_2&gt;,
+<a href=#28 id=28 data-nosnippet>28</a>    <span class="kw">pub </span>dup: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_9&gt;,
+<a href=#29 id=29 data-nosnippet>29</a>    <span class="kw">pub </span>ddown: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_3&gt;,
+<a href=#30 id=30 data-nosnippet>30</a>    <span class="kw">pub </span>dleft: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_6&gt;,
+<a href=#31 id=31 data-nosnippet>31</a>    <span class="kw">pub </span>dright: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_7&gt;,
+<a href=#32 id=32 data-nosnippet>32</a>    <span class="kw">pub </span>dcenter: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_8&gt;,
 <a href=#33 id=33 data-nosnippet>33</a>}
 <a href=#34 id=34 data-nosnippet>34</a>
-<a href=#35 id=35 data-nosnippet>35</a><span class="kw">impl </span>ButtonPoller {
-<a href=#36 id=36 data-nosnippet>36</a>    <span class="kw">pub fn </span>new(
-<a href=#37 id=37 data-nosnippet>37</a>        pin_left: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_12&gt;,
-<a href=#38 id=38 data-nosnippet>38</a>        pin_right: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_2&gt;,
-<a href=#39 id=39 data-nosnippet>39</a>        pin_dup: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_9&gt;,
-<a href=#40 id=40 data-nosnippet>40</a>        pin_ddown: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_3&gt;,
-<a href=#41 id=41 data-nosnippet>41</a>        pin_dleft: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_6&gt;,
-<a href=#42 id=42 data-nosnippet>42</a>        pin_dright: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_7&gt;,
-<a href=#43 id=43 data-nosnippet>43</a>        pin_dcenter: PeripheralRef&lt;<span class="lifetime">'static</span>, PIN_8&gt;,
-<a href=#44 id=44 data-nosnippet>44</a>    ) -&gt; <span class="self">Self </span>{
-<a href=#45 id=45 data-nosnippet>45</a>        <span class="kw">fn </span>mk_input&lt;P: embassy_rp::gpio::Pin + <span class="lifetime">'static</span>&gt;(
-<a href=#46 id=46 data-nosnippet>46</a>            pin: PeripheralRef&lt;<span class="lifetime">'static</span>, P&gt;,
-<a href=#47 id=47 data-nosnippet>47</a>        ) -&gt; Input&lt;<span class="lifetime">'static</span>&gt; {
-<a href=#48 id=48 data-nosnippet>48</a>            <span class="kw">let </span><span class="kw-2">mut </span>input = Input::new(pin, Pull::Up);
-<a href=#49 id=49 data-nosnippet>49</a>            input.set_schmitt(<span class="bool-val">true</span>);
-<a href=#50 id=50 data-nosnippet>50</a>            input
-<a href=#51 id=51 data-nosnippet>51</a>        }
-<a href=#52 id=52 data-nosnippet>52</a>
-<a href=#53 id=53 data-nosnippet>53</a>        <span class="self">Self </span>{
-<a href=#54 id=54 data-nosnippet>54</a>            left: mk_input(pin_left),
-<a href=#55 id=55 data-nosnippet>55</a>            right: mk_input(pin_right),
-<a href=#56 id=56 data-nosnippet>56</a>            dup: mk_input(pin_dup),
-<a href=#57 id=57 data-nosnippet>57</a>            ddown: mk_input(pin_ddown),
-<a href=#58 id=58 data-nosnippet>58</a>            dleft: mk_input(pin_dleft),
-<a href=#59 id=59 data-nosnippet>59</a>            dright: mk_input(pin_dright),
-<a href=#60 id=60 data-nosnippet>60</a>            dcenter: mk_input(pin_dcenter),
-<a href=#61 id=61 data-nosnippet>61</a>        }
-<a href=#62 id=62 data-nosnippet>62</a>    }
-<a href=#63 id=63 data-nosnippet>63</a>
-<a href=#64 id=64 data-nosnippet>64</a>    <span class="doccomment">/// Returns `true` if the button is pressed (level is Low)
-<a href=#65 id=65 data-nosnippet>65</a>    </span><span class="kw">pub fn </span>is_pressed(<span class="kw-2">&amp;</span><span class="self">self</span>, id: ButtonId) -&gt; bool {
-<a href=#66 id=66 data-nosnippet>66</a>        <span class="kw">let </span>level = <span class="kw">match </span>id {
-<a href=#67 id=67 data-nosnippet>67</a>            ButtonId::Left =&gt; <span class="self">self</span>.left.get_level(),
-<a href=#68 id=68 data-nosnippet>68</a>            ButtonId::Right =&gt; <span class="self">self</span>.right.get_level(),
-<a href=#69 id=69 data-nosnippet>69</a>            ButtonId::DUp =&gt; <span class="self">self</span>.dup.get_level(),
-<a href=#70 id=70 data-nosnippet>70</a>            ButtonId::DDown =&gt; <span class="self">self</span>.ddown.get_level(),
-<a href=#71 id=71 data-nosnippet>71</a>            ButtonId::DLeft =&gt; <span class="self">self</span>.dleft.get_level(),
-<a href=#72 id=72 data-nosnippet>72</a>            ButtonId::DRight =&gt; <span class="self">self</span>.dright.get_level(),
-<a href=#73 id=73 data-nosnippet>73</a>            ButtonId::DCenter =&gt; <span class="self">self</span>.dcenter.get_level(),
-<a href=#74 id=74 data-nosnippet>74</a>        };
-<a href=#75 id=75 data-nosnippet>75</a>
-<a href=#76 id=76 data-nosnippet>76</a>        level == Level::Low
-<a href=#77 id=77 data-nosnippet>77</a>    }
-<a href=#78 id=78 data-nosnippet>78</a>
-<a href=#79 id=79 data-nosnippet>79</a>    <span class="doccomment">/// Returns a compact bitfield of all button states
-<a href=#80 id=80 data-nosnippet>80</a>    </span><span class="kw">pub fn </span>poll_all(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u8 {
+<a href=#35 id=35 data-nosnippet>35</a><span class="kw">pub struct </span>ButtonPoller {
+<a href=#36 id=36 data-nosnippet>36</a>    left: Input&lt;<span class="lifetime">'static</span>&gt;,
+<a href=#37 id=37 data-nosnippet>37</a>    right: Input&lt;<span class="lifetime">'static</span>&gt;,
+<a href=#38 id=38 data-nosnippet>38</a>    dup: Input&lt;<span class="lifetime">'static</span>&gt;,
+<a href=#39 id=39 data-nosnippet>39</a>    ddown: Input&lt;<span class="lifetime">'static</span>&gt;,
+<a href=#40 id=40 data-nosnippet>40</a>    dleft: Input&lt;<span class="lifetime">'static</span>&gt;,
+<a href=#41 id=41 data-nosnippet>41</a>    dright: Input&lt;<span class="lifetime">'static</span>&gt;,
+<a href=#42 id=42 data-nosnippet>42</a>    dcenter: Input&lt;<span class="lifetime">'static</span>&gt;,
+<a href=#43 id=43 data-nosnippet>43</a>}
+<a href=#44 id=44 data-nosnippet>44</a>
+<a href=#45 id=45 data-nosnippet>45</a><span class="kw">impl </span>ButtonPoller {
+<a href=#46 id=46 data-nosnippet>46</a>    <span class="kw">pub fn </span>new(pins: ButtonPins) -&gt; <span class="self">Self </span>{
+<a href=#47 id=47 data-nosnippet>47</a>        <span class="kw">fn </span>mk_input&lt;P: embassy_rp::gpio::Pin + <span class="lifetime">'static</span>&gt;(
+<a href=#48 id=48 data-nosnippet>48</a>            pin: PeripheralRef&lt;<span class="lifetime">'static</span>, P&gt;,
+<a href=#49 id=49 data-nosnippet>49</a>        ) -&gt; Input&lt;<span class="lifetime">'static</span>&gt; {
+<a href=#50 id=50 data-nosnippet>50</a>            <span class="kw">let </span><span class="kw-2">mut </span>input = Input::new(pin, Pull::Up);
+<a href=#51 id=51 data-nosnippet>51</a>            input.set_schmitt(<span class="bool-val">true</span>);
+<a href=#52 id=52 data-nosnippet>52</a>            input
+<a href=#53 id=53 data-nosnippet>53</a>        }
+<a href=#54 id=54 data-nosnippet>54</a>
+<a href=#55 id=55 data-nosnippet>55</a>        <span class="self">Self </span>{
+<a href=#56 id=56 data-nosnippet>56</a>            left: mk_input(pins.left),
+<a href=#57 id=57 data-nosnippet>57</a>            right: mk_input(pins.right),
+<a href=#58 id=58 data-nosnippet>58</a>            dup: mk_input(pins.dup),
+<a href=#59 id=59 data-nosnippet>59</a>            ddown: mk_input(pins.ddown),
+<a href=#60 id=60 data-nosnippet>60</a>            dleft: mk_input(pins.dleft),
+<a href=#61 id=61 data-nosnippet>61</a>            dright: mk_input(pins.dright),
+<a href=#62 id=62 data-nosnippet>62</a>            dcenter: mk_input(pins.dcenter),
+<a href=#63 id=63 data-nosnippet>63</a>        }
+<a href=#64 id=64 data-nosnippet>64</a>    }
+<a href=#65 id=65 data-nosnippet>65</a>
+<a href=#66 id=66 data-nosnippet>66</a>    <span class="kw">pub fn </span>is_pressed(<span class="kw-2">&amp;</span><span class="self">self</span>, id: ButtonId) -&gt; bool {
+<a href=#67 id=67 data-nosnippet>67</a>        <span class="kw">let </span>level = <span class="kw">match </span>id {
+<a href=#68 id=68 data-nosnippet>68</a>            ButtonId::Left =&gt; <span class="self">self</span>.left.get_level(),
+<a href=#69 id=69 data-nosnippet>69</a>            ButtonId::Right =&gt; <span class="self">self</span>.right.get_level(),
+<a href=#70 id=70 data-nosnippet>70</a>            ButtonId::DUp =&gt; <span class="self">self</span>.dup.get_level(),
+<a href=#71 id=71 data-nosnippet>71</a>            ButtonId::DDown =&gt; <span class="self">self</span>.ddown.get_level(),
+<a href=#72 id=72 data-nosnippet>72</a>            ButtonId::DLeft =&gt; <span class="self">self</span>.dleft.get_level(),
+<a href=#73 id=73 data-nosnippet>73</a>            ButtonId::DRight =&gt; <span class="self">self</span>.dright.get_level(),
+<a href=#74 id=74 data-nosnippet>74</a>            ButtonId::DCenter =&gt; <span class="self">self</span>.dcenter.get_level(),
+<a href=#75 id=75 data-nosnippet>75</a>        };
+<a href=#76 id=76 data-nosnippet>76</a>
+<a href=#77 id=77 data-nosnippet>77</a>        level == Level::Low
+<a href=#78 id=78 data-nosnippet>78</a>    }
+<a href=#79 id=79 data-nosnippet>79</a>
+<a href=#80 id=80 data-nosnippet>80</a>    <span class="kw">pub fn </span>poll_all(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u8 {
 <a href=#81 id=81 data-nosnippet>81</a>        <span class="kw">let </span><span class="kw-2">mut </span>bits = <span class="number">0u8</span>;
 <a href=#82 id=82 data-nosnippet>82</a>
 <a href=#83 id=83 data-nosnippet>83</a>        <span class="kw">if </span><span class="self">self</span>.is_pressed(ButtonId::Left) {
