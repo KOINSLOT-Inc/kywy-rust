@@ -13,8 +13,10 @@ on:
 
 permissions:
   pull-requests: write
-  contents: read
-
+  contents: write
+  packages: write
+  issues: write
+  actions: write
 
 jobs:
   build:
@@ -99,25 +101,25 @@ jobs:
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-
+  
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+  
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: thumbv6m-none-eabi
-
+  
       - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y pkg-config libudev-dev
-
+  
       - name: Install elf2uf2-rs
         run: cargo install elf2uf2-rs
-
-        # Add final release examples here
+  
+      # Build release examples
       - name: Build examples for release
         run: |
           cargo build --release --example hello_world --target thumbv6m-none-eabi
@@ -125,7 +127,8 @@ jobs:
           cargo build --release --example snake --target thumbv6m-none-eabi
           cargo build --release --example bricks --target thumbv6m-none-eabi
           cargo build --release --example sprite_test --target thumbv6m-none-eabi
-
+  
+      # Safely delete old release and tag
       - name: Delete old release and tag (latest)
         run: |
           tag="latest"
@@ -133,7 +136,8 @@ jobs:
           git push origin :refs/tags/$tag || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+  
+      # Recreate latest tag and release
       - name: Recreate latest tag and release
         run: |
           tag="latest"
@@ -142,7 +146,8 @@ jobs:
           gh release create "$tag" --title "Latest Build" --notes "Automated rebuild at $GITHUB_SHA"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+  
+      # Convert ELF to UF2
       - name: Convert ELF to UF2
         run: |
           mkdir -p artifacts
@@ -155,7 +160,8 @@ jobs:
             fi
             elf2uf2-rs "$f" "artifacts/${filename}.uf2"
           done
-
+  
+      # Upload UF2 artifacts to GitHub Release
       - name: Upload UF2 artifacts to GitHub Release
         run: |
           for f in artifacts/*.uf2; do
@@ -163,15 +169,17 @@ jobs:
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+  
+      # Generate Documentation
       - name: Generate Documentation
         run: |
           cargo doc --no-deps --target thumbv6m-none-eabi --all-features
           mkdir -p docs
           cp -r target/thumbv6m-none-eabi/doc/* docs/
-
+  
+      # Deploy Documentation
       - name: Deploy Documentation
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs # The directory where rustdoc outputs files
+          publish_dir: docs
