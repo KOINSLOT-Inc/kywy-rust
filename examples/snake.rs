@@ -267,7 +267,7 @@ async fn main(spawner: Spawner) {
 
     kywy_spi_from!(p => spi_bus);
     kywy_display_from!(spi_bus, p => display);
-    kywy_usb_from!(p => usb);
+    kywy_usb_from!(spawner, p);
 
     let style = MonoTextStyle::new(&FONT_6X10, BinaryColor::Off);
     display.initialize().await;

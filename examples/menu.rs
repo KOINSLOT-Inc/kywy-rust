@@ -41,7 +41,7 @@ async fn main(spawner: Spawner) {
     info!("Initializing display");
     kywy_spi_from!(p => spi_bus);
     kywy_display_from!(spi_bus, p => display);
-    kywy_usb_from!(p => usb);
+    kywy_usb_from!(spawner, p);
     display.initialize().await;
     display.enable();
     display.clear_buffer(BinaryColor::On);

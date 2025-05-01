@@ -29,7 +29,7 @@ async fn main(spawner: Spawner) {
     kywy_spi_from!(p => spi_bus);
     kywy_display_from!(spi_bus, p => display);
     kywy_button_async_from!(&spawner, p => button_channel);
-    kywy_usb_from!(p => usb);
+    kywy_usb_from!(spawner, p);
 
     display.initialize().await;
     display.enable();
