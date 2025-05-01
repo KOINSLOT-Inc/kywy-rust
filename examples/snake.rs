@@ -255,10 +255,6 @@ impl GameState {
     }
 }
 
-bind_interrupts!(struct Irqs {
-    USBCTRL_IRQ => InterruptHandler<USB>;
-});
-
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
     info!("Snake game starting");
