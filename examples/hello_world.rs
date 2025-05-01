@@ -18,6 +18,7 @@ use embedded_graphics::{
 };
 use kywy::kywy_display_from;
 use kywy::kywy_spi_from;
+use kywy::kywy_usb_from;
 use panic_probe as _;
 
 #[embassy_executor::main]
@@ -27,6 +28,7 @@ async fn main(_spawner: embassy_executor::Spawner) {
     let p = embassy_rp::init(Default::default());
     kywy_spi_from!(p => spi_bus);
     kywy_display_from!(spi_bus, p => display);
+    kywy_usb_from!(spawner, p);
 
     // Black Screen
     display.clear_buffer(BinaryColor::Off); // Clear buffer to black

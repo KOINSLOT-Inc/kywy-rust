@@ -17,7 +17,7 @@ use heapless::Vec;
 use kywy::{
     button_async::{ButtonId, ButtonState},
     engine::sprite::{Animation, SpriteInstance, SpriteSheet},
-    kywy_button_async_from, kywy_display_from, kywy_spi_from,
+    kywy_button_async_from, kywy_display_from, kywy_spi_from, kywy_usb_from,
 };
 use panic_probe as _;
 
@@ -29,6 +29,7 @@ async fn main(spawner: Spawner) {
     kywy_spi_from!(p => spi_bus);
     kywy_display_from!(spi_bus, p => display);
     kywy_button_async_from!(&spawner, p => button_channel);
+    kywy_usb_from!(p => usb);
 
     display.initialize().await;
     display.enable();

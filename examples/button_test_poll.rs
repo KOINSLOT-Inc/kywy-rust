@@ -15,7 +15,7 @@ use defmt_rtt as _;
 use panic_probe as _;
 
 use kywy::button_poll::ButtonId;
-use kywy::{kywy_button_poll_from, kywy_display_from, kywy_spi_from};
+use kywy::{kywy_button_poll_from, kywy_display_from, kywy_spi_from, kywy_usb_from};
 
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
@@ -36,6 +36,7 @@ async fn main(_spawner: Spawner) {
     // Initialize display
     kywy_spi_from!(p => spi_bus);
     kywy_display_from!(spi_bus, p => display);
+    kywy_usb_from!(spawner, p);
     let style = MonoTextStyle::new(&FONT_6X10, BinaryColor::Off);
 
     display.initialize().await;

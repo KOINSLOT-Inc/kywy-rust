@@ -178,3 +178,16 @@ macro_rules! kywy_battery_from {
         .await;
     };
 }
+
+#[macro_export]
+macro_rules! kywy_usb_from {
+    ($spawner:expr, $p:expr) => {
+        use embassy_executor::Spawner;
+        use embassy_rp::peripherals::USB;
+        use $crate::usb::usb_monitor_task;
+
+        $spawner
+            .spawn(usb_monitor_task($spawner, $p.USB))
+            .expect("Failed to spawn USB task");
+    };
+}
