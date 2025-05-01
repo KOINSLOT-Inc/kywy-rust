@@ -48,6 +48,9 @@ jobs:
         run: |
           cargo check-all-features --target thumbv6m-none-eabi
 
+      - name: Cargo publish dry run
+        run: cargo publish --dry-run
+
         # Test build examples, does not release
       - name: Test build examples (without releaseing)
         run: |
@@ -97,9 +100,6 @@ jobs:
               repo: repo.repo,
               body: body,
             });
-
-      - name: Cargo publish dry run
-        run: cargo publish --dry-run
 
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
