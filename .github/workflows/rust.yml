@@ -88,9 +88,9 @@ jobs:
             const repo = context.repo;
             const artifactsUrl = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${runId}`;
             const commit = context.payload.pull_request.head.sha.slice(0, 7); // short SHA
-      
+
             const body = `🛠️ Download build artifacts [here](${artifactsUrl}) (look for **${artifactName}**). \nBuilt from commit \`${commit}\` `;
-      
+
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: repo.owner,
@@ -98,27 +98,30 @@ jobs:
               body: body,
             });
 
+      - name: Cargo publish dry run
+        run: cargo publish --dry-run
+
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-  
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-  
+
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: thumbv6m-none-eabi
-  
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y pkg-config libudev-dev
-  
+
       - name: Install elf2uf2-rs
         run: cargo install elf2uf2-rs
-  
+
       # Build release examples
       - name: Build examples for release
         run: |
@@ -127,7 +130,7 @@ jobs:
           cargo build --release --example snake --target thumbv6m-none-eabi
           cargo build --release --example bricks --target thumbv6m-none-eabi
           cargo build --release --example sprite_test --target thumbv6m-none-eabi
-  
+
       # Safely delete old release and tag
       - name: Delete old release and tag (latest)
         run: |
@@ -136,7 +139,7 @@ jobs:
           git push origin :refs/tags/$tag || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
+
       # Recreate latest tag and release
       - name: Recreate latest tag and release
         run: |
@@ -146,7 +149,7 @@ jobs:
           gh release create "$tag" --title "Latest Build" --notes "Automated rebuild at $GITHUB_SHA"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
+
       # Convert ELF to UF2
       - name: Convert ELF to UF2
         run: |
@@ -160,7 +163,7 @@ jobs:
             fi
             elf2uf2-rs "$f" "artifacts/${filename}.uf2"
           done
-  
+
       # Upload UF2 artifacts to GitHub Release
       - name: Upload UF2 artifacts to GitHub Release
         run: |
@@ -169,14 +172,14 @@ jobs:
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
+
       # Generate Documentation
       - name: Generate Documentation
         run: |
           cargo doc --no-deps --target thumbv6m-none-eabi --all-features
           mkdir -p docs
           cp -r target/thumbv6m-none-eabi/doc/* docs/
-  
+
       # Deploy Documentation
       - name: Deploy Documentation
         uses: peaceiris/actions-gh-pages@v3
