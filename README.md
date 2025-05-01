@@ -57,11 +57,12 @@ To do:
 - [X] Implement display driver (LS013B7DH05)
 - [X] Implement button interface
 - [X] Implement battery interface
+- [X] Implement USB serial and reboot
+- [X] Sprites
 - [ ] Improve battery reading function with real data
 - [ ] Build game engine
 - [ ] Add more documentation
 - [ ] Add more examples/games
-- [ ] Implement USB serial and reboot
 - [ ] Implement SD-card interface (waiting on shared bus support from embedded-sdmmc)
 
 
@@ -83,17 +84,17 @@ you can install elf2uf2-rs by running:
 UF2 file will then be in the directory 'target/thumbv6m-none-eabi/release/examples/'
 
 # Uploading UF2 files
-Note that this rust library does not support automatic rebooting into programming mode like arduino.
-You must put the device into programming mode manually:
+Note that your code must use the kywy_usb_from! macro to support automatic rebooting. To do this start a baud 1200 terminal on the device.
+
+You can also put the device into programming mode manually:
 1. Turn off and unplug the device
 2. Use a paper clip to press and hold the reset button on the back to the right of the kywy logo
 3. while holding insert the USB
 4. wait a second and you should see a usb device. You can now release the button
 
 You can now copy the UF2 to the USB storage device.
-(Plan to improve this procedure in the future to support arduino style programming)
 
-# Including as a crate frome crates.io [![Crates.io Version](https://img.shields.io/crates/v/kywy)](https://crates.io/crates/kywy)
+# Including as a crate from crates.io [![Crates.io Version](https://img.shields.io/crates/v/kywy)](https://crates.io/crates/kywy)
 
 use this to add kywy to a rust project:
 <pre><code id="code-block">cargo add kywy</code></pre>
@@ -116,5 +117,3 @@ If you want an easier method of developing for kywy, check out the arduino libra
 2. Make sure you set your paths for rust and cargo bin
 3. Install elf2uf2-rs: `cargo install elf2uf2-rs`
 4. Test that elf2uf2-rs is in your path by running elf2uf2-rs
-
-You can also add this to your own project with the following in your Cargo.toml file. However, this library is currently unstable and may not work as expected.
