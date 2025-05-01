@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2025 KOINSLOT Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
-//
-//! This library monitors the usb for a baud 1200 and reboots to bootloader for programming following the Arduino protocol
+
+//! USB console and bootloader monitor for RP2040.
 
 use defmt::{info, unwrap};
 use embassy_executor::Spawner;
@@ -9,20 +9,26 @@ use embassy_rp::bind_interrupts;
 use embassy_rp::peripherals::USB;
 use embassy_rp::rom_data::reset_to_usb_boot;
 use embassy_rp::usb::{Driver, InterruptHandler};
+use embassy_sync::blocking_mutex::Mutex;
+use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
 use embassy_time::{Duration, Timer, WithTimeout};
 use embassy_usb::class::cdc_acm::{CdcAcmClass, Receiver, Sender, State};
 use embassy_usb::driver::EndpointError;
 use embassy_usb::{Builder, Config, UsbDevice};
+use heapless::spsc::Queue;
 use static_cell::StaticCell;
 
 type MyUsbDriver = Driver<'static, USB>;
 type MyUsbDevice = UsbDevice<'static, MyUsbDriver>;
 
-// Static buffers for USB
 static CONFIG_DESCRIPTOR: StaticCell<[u8; 256]> = StaticCell::new();
 static BOS_DESCRIPTOR: StaticCell<[u8; 256]> = StaticCell::new();
 static CONTROL_BUF: StaticCell<[u8; 64]> = StaticCell::new();
 static CDC_STATE: StaticCell<State> = StaticCell::new();
+
+// Shared queues
+static USB_RX_QUEUE: Mutex<CriticalSectionRawMutex, Queue<u8, 256>> = Mutex::new(Queue::new());
+static USB_TX_QUEUE: Mutex<CriticalSectionRawMutex, Queue<u8, 256>> = Mutex::new(Queue::new());
 
 bind_interrupts!(struct Irqs {
     USBCTRL_IRQ => InterruptHandler<USB>;
@@ -47,34 +53,28 @@ pub async fn usb_monitor_task(spawner: Spawner, usb: USB) {
         config,
         CONFIG_DESCRIPTOR.init([0; 256]),
         BOS_DESCRIPTOR.init([0; 256]),
-        &mut [], // no MS OS descriptors
+        &mut [],
         CONTROL_BUF.init([0; 64]),
     );
 
-    // Create and split class
     let cdc = CdcAcmClass::new(&mut builder, CDC_STATE.init(State::new()), 64);
     let (mut sender, mut receiver, control) = cdc.split_with_control();
 
     let usb = builder.build();
     unwrap!(spawner.spawn(run_usb_task(usb)));
+
     sender.wait_connection().await;
     control.control_changed().await;
+
     loop {
         sender.wait_connection().await;
         control.control_changed().await;
 
-        let baud = receiver.line_coding().data_rate();
         let dtr = sender.dtr();
+        let baud = receiver.line_coding().data_rate();
         info!("DTR={}, baud={}", dtr, baud);
 
-        if baud == 1200 && dtr {
-            info!("Triggering bootloader via 1200 baud + DTR");
-            Timer::after_millis(100).await;
-            reset_to_usb_boot(0, 0);
-        }
-
-        // Only enter echo after confirming we're not rebooting
-        if dtr && baud != 1200 {
+        if dtr {
             info!("Terminal connected. Starting echo...");
             let _ = echo(&mut receiver, &mut sender).await;
         }
@@ -92,43 +92,111 @@ struct Disconnected;
 impl From<EndpointError> for Disconnected {
     fn from(val: EndpointError) -> Self {
         match val {
-            EndpointError::BufferOverflow => panic!("Buffer overflow"),
+            EndpointError::BufferOverflow => panic!("USB buffer overflow"),
             EndpointError::Disabled => Disconnected,
         }
     }
 }
 
-/// Echoes received USB packets back to the sender.
+/// Full duplex USB communication: receive → RX queue, TX queue → send.
 async fn echo(
     receiver: &mut Receiver<'static, MyUsbDriver>,
     sender: &mut Sender<'static, MyUsbDriver>,
 ) -> Result<(), Disconnected> {
-    let mut buf = [0; 64];
+    let mut read_buf = [0; 64];
+    let mut write_buf = [0; 64];
 
     loop {
-        // Exit echo mode if DTR is dropped
-        if receiver.line_coding().data_rate() == 1200 {
+        let dtr = sender.dtr();
+        let baud = receiver.line_coding().data_rate();
+
+        // Bootloader trigger
+        if baud == 1200 && dtr {
             Timer::after_millis(100).await;
             reset_to_usb_boot(0, 0);
         }
 
-        if !sender.dtr() {
+        if !dtr {
             return Ok(());
         }
 
+        // Read USB → enqueue to RX queue
         match receiver
-            .read_packet(&mut buf)
-            .with_timeout(Duration::from_millis(100))
+            .read_packet(&mut read_buf)
+            .with_timeout(Duration::from_millis(10))
             .await
         {
             Ok(Ok(n)) if n > 0 => {
-                let _ = sender.write_packet(&buf[..n]).await;
-            }
-            Ok(Err(e)) => return Err(e.into()),
-            Err(_) => {
-                // Timeout, but we loop again to check DTR/baud
+                let mut rx = USB_RX_QUEUE.lock_mut();
+                for &b in &read_buf[..n] {
+                    let _ = rx.enqueue(b);
+                }
             }
             _ => {}
         }
+
+        // Dequeue from TX queue → send USB
+        let n = {
+            let mut tx = USB_TX_QUEUE.lock_mut();
+            let mut i = 0;
+            while i < write_buf.len() {
+                if let Some(b) = tx.dequeue() {
+                    write_buf[i] = b;
+                    i += 1;
+                } else {
+                    break;
+                }
+            }
+            i
+        };
+
+        if n > 0 {
+            let _ = sender.write_packet(&write_buf[..n]).await;
+        }
+
+        Timer::after_millis(1).await;
     }
+}
+
+// === Public USB Console API ===
+
+/// Enqueue a byte slice for USB output.
+pub fn usb_print(data: &[u8]) {
+    let mut q = USB_TX_QUEUE.lock_mut();
+    for &b in data {
+        let _ = q.enqueue(b);
+    }
+}
+
+/// Print a string followed by newline.
+pub fn usb_println(line: &str) {
+    usb_print(line.as_bytes());
+    usb_print(b"\n");
+}
+
+/// Read one character from the USB RX queue.
+pub fn usb_read_char() -> Option<u8> {
+    let mut q = USB_RX_QUEUE.lock_mut();
+    q.dequeue()
+}
+
+/// Read a line ending in `\n` into the given buffer.
+pub fn usb_read_line(buf: &mut [u8]) -> Option<usize> {
+    let mut q = USB_RX_QUEUE.lock_mut();
+    let mut i = 0;
+
+    while i < buf.len() {
+        match q.dequeue() {
+            Some(b) => {
+                buf[i] = b;
+                i += 1;
+                if b == b'\n' {
+                    break;
+                }
+            }
+            None => break,
+        }
+    }
+
+    if i > 0 { Some(i) } else { None }
 }
