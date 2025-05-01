@@ -61,6 +61,7 @@ jobs:
           cargo build --release --example snake --target thumbv6m-none-eabi
           cargo build --release --example bricks --target thumbv6m-none-eabi
           cargo build --release --example sprite_test --target thumbv6m-none-eabi
+          cargo build --release --example usb_serial --target thumbv6m-none-eabi
 
       - name: Convert ELF to UF2
         run: |
