@@ -19,7 +19,6 @@ use kywy::button_async::{ButtonEvent, ButtonId, ButtonState};
 use kywy::{kywy_button_async_from, kywy_display_from, kywy_spi_from, kywy_usb_from};
 
 use embassy_executor::Spawner;
-use embassy_rp::bind_interrupts;
 use embassy_rp::peripherals::USB;
 use embassy_rp::usb::InterruptHandler;
 use embassy_time::{Duration, Instant, Timer};
