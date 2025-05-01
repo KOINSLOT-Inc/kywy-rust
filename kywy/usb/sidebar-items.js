@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["usb_monitor_task"]};
+window.SIDEBAR_ITEMS = {"fn":["usb_monitor_task","usb_print","usb_println","usb_read_char","usb_read_line"]};
