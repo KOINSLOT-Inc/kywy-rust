@@ -28,7 +28,7 @@ use embedded_graphics::{
 };
 
 #[embassy_executor::main]
-async fn main(_spawner: Spawner) {
+async fn main(spawner: Spawner) {
     info!("Starting button polling example");
 
     let p = embassy_rp::init(Default::default());

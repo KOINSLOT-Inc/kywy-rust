@@ -21,7 +21,7 @@ use panic_probe as _;
 use tinybmp::Bmp;
 
 #[embassy_executor::main]
-async fn main(_spawner: embassy_executor::Spawner) {
+async fn main(spawner: embassy_executor::Spawner) {
     info!("Starting Kywy BMP Graphic Demo!");
 
     let p = embassy_rp::init(Default::default());

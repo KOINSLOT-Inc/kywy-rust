@@ -22,7 +22,7 @@ use kywy::kywy_usb_from;
 use panic_probe as _;
 
 #[embassy_executor::main]
-async fn main(_spawner: embassy_executor::Spawner) {
+async fn main(spawner: embassy_executor::Spawner) {
     info!("Starting Kywy Hello World display!");
 
     let p = embassy_rp::init(Default::default());
