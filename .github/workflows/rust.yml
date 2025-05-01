@@ -49,7 +49,7 @@ jobs:
           cargo check-all-features --target thumbv6m-none-eabi
 
       - name: Cargo publish dry run
-        run: cargo publish --dry-run
+        run: cargo publish --dry-run --target thumbv6m-none-eabi
 
         # Test build examples, does not release
       - name: Test build examples (without releaseing)
