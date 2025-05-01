@@ -16,16 +16,18 @@ use embassy_time::{Duration, Timer};
 use embedded_graphics::{image::Image, pixelcolor::BinaryColor, prelude::*};
 use kywy::kywy_display_from;
 use kywy::kywy_spi_from;
+use kywy::kywy_usb_from;
 use panic_probe as _;
 use tinybmp::Bmp;
 
 #[embassy_executor::main]
-async fn main(_spawner: embassy_executor::Spawner) {
+async fn main(spawner: embassy_executor::Spawner) {
     info!("Starting Kywy BMP Graphic Demo!");
 
     let p = embassy_rp::init(Default::default());
     kywy_spi_from!(p => spi_bus);
     kywy_display_from!(spi_bus, p => display);
+    kywy_usb_from!(spawner, p);
 
     display.initialize().await;
     display.enable();

@@ -17,15 +17,16 @@ use embedded_graphics::{
 };
 use heapless::String;
 use kywy::battery::BatteryStatus;
-use kywy::{kywy_battery_from, kywy_display_from, kywy_spi_from};
+use kywy::{kywy_battery_from, kywy_display_from, kywy_spi_from, kywy_usb_rom};
 use panic_probe as _;
 
 #[embassy_executor::main]
-async fn main(_spawner: Spawner) {
+async fn main(spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
     kywy_spi_from!(p => spi_bus);
     kywy_display_from!(spi_bus, p => display);
     kywy_battery_from!(p => battery);
+    kywy_usb_from!(spawner, p);
 
     display.initialize().await;
     display.enable();

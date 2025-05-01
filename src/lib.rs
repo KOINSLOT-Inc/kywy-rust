@@ -8,6 +8,7 @@ pub mod battery;
 pub mod display;
 pub mod engine;
 pub mod sdcard;
+pub mod usb;
 
 #[macro_use]
 pub mod macros;
