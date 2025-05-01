@@ -98,7 +98,6 @@ impl From<EndpointError> for Disconnected {
 }
 
 /// Full duplex USB communication: receive → RX queue, TX queue → send.
-
 async fn echo(
     receiver: &mut Receiver<'static, MyUsbDriver>,
     sender: &mut Sender<'static, MyUsbDriver>,
