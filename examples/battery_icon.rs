@@ -17,7 +17,7 @@ use embedded_graphics::{
 };
 use heapless::String;
 use kywy::battery::BatteryStatus;
-use kywy::{kywy_battery_from, kywy_display_from, kywy_spi_from, kywy_usb_rom};
+use kywy::{kywy_battery_from, kywy_display_from, kywy_spi_from, kywy_usb_from};
 use panic_probe as _;
 
 #[embassy_executor::main]
