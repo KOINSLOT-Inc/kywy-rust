@@ -19,6 +19,31 @@ pub struct SpriteSheet<'a> {
     sheet_size: Size,
 }
 
+#[derive(Clone, Copy)]
+pub struct SpriteOptions {
+    pub flip_x: bool,
+    pub flip_y: bool,
+    pub rotation: Rotation,
+}
+
+#[derive(Clone, Copy)]
+pub enum Rotation {
+    None,
+    R90,
+    R180,
+    R270,
+}
+
+impl Default for SpriteOptions {
+    fn default() -> Self {
+        Self {
+            flip_x: false,
+            flip_y: false,
+            rotation: Rotation::None,
+        }
+    }
+}
+
 impl<'a> SpriteSheet<'a> {
     pub fn new(bmp_data: &'a [u8], sprite_size: Size) -> Result<Self, ParseError> {
         let bmp = Bmp::from_slice(bmp_data)?;
@@ -62,37 +87,60 @@ pub struct Sprite<'a> {
 }
 
 impl Sprite<'_> {
-    pub fn draw<D>(&self, target: &mut D, pos: Point) -> Result<(), D::Error>
+    pub fn draw<D>(
+        &self,
+        target: &mut D,
+        pos: Point,
+        options: SpriteOptions,
+    ) -> Result<(), D::Error>
     where
         D: DrawTarget<Color = BinaryColor>,
     {
-        let sprite_width = self.sheet.sprite_size.width;
-        let sprite_height = self.sheet.sprite_size.height;
-        let mut frame_buffer = [0u8; 64 * 64 / 8];
+        let w = self.sheet.sprite_size.width as usize;
+        let h = self.sheet.sprite_size.height as usize;
+        let mut framebuffer = [0u8; 64 * 64 / 8];
 
         for pixel in self.sheet.bmp.pixels() {
             let Point { x, y } = pixel.0;
-            let within_x = x >= self.offset.x && x < self.offset.x + sprite_width as i32;
-            let within_y = y >= self.offset.y && y < self.offset.y + sprite_height as i32;
+            if x < self.offset.x
+                || y < self.offset.y
+                || x >= self.offset.x + w as i32
+                || y >= self.offset.y + h as i32
+            {
+                continue;
+            }
 
-            if within_x && within_y {
-                let local_x = (x - self.offset.x) as usize;
-                let local_y = (y - self.offset.y) as usize; // remove vertical flip
-                let idx = local_y * sprite_width as usize + local_x;
-                if pixel.1.is_on() {
-                    let byte = idx / 8;
-                    let bit = 7 - (idx % 8);
-                    frame_buffer[byte] |= 1 << bit;
-                }
+            // Local sprite coordinates
+            let mut lx = (x - self.offset.x) as usize;
+            let mut ly = (y - self.offset.y) as usize;
+
+            // Flip
+            if options.flip_x {
+                lx = w - 1 - lx;
+            }
+            if options.flip_y {
+                ly = h - 1 - ly;
+            }
+
+            // Rotation
+            let (fx, fy) = match options.rotation {
+                Rotation::None => (lx, ly),
+                Rotation::R90 => (h - 1 - ly, lx),
+                Rotation::R180 => (w - 1 - lx, h - 1 - ly),
+                Rotation::R270 => (ly, w - 1 - lx),
+            };
+
+            let idx = fy * w + fx;
+            if pixel.1.is_on() {
+                let byte = idx / 8;
+                let bit = 7 - (idx % 8);
+                framebuffer[byte] |= 1 << bit;
             }
         }
 
-        let sprite_img = ImageRaw::<BinaryColor>::new(
-            &frame_buffer[..(sprite_width as usize * sprite_height as usize / 8)],
-            sprite_width,
-        );
-        let img = Image::new(&sprite_img, pos);
-        img.draw(target)
+        let used_bytes = w * h / 8;
+        let img_raw = ImageRaw::<BinaryColor>::new(&framebuffer[..used_bytes], w as u32);
+        Image::new(&img_raw, pos).draw(target)
     }
 }
 

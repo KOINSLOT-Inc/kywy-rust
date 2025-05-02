@@ -16,7 +16,7 @@ use embedded_graphics::{pixelcolor::BinaryColor, prelude::*};
 use heapless::Vec;
 use kywy::{
     button_async::{ButtonId, ButtonState},
-    engine::sprite::{Animation, SpriteInstance, SpriteSheet},
+    engine::sprite::{Animation, Rotation, SpriteInstance, SpriteOptions, SpriteSheet},
     kywy_button_async_from, kywy_display_from, kywy_spi_from, kywy_usb_from,
 };
 use panic_probe as _;
@@ -51,12 +51,19 @@ async fn main(spawner: Spawner) {
         .unwrap(); // 2
 
     let mut sprite = SpriteInstance::new(animations, Point::new(40, 40));
+    let sprite_options = SpriteOptions {
+        flip_x: true,
+        flip_y: false,
+        rotation: Rotation::R90,
+    };
 
     loop {
         // Draw current frame
         let frame = sprite.current().current_frame_sprite().unwrap();
         display.clear(BinaryColor::On).unwrap();
-        frame.draw(&mut display, sprite.position).unwrap();
+        frame
+            .draw(&mut display, sprite.position, sprite_options)
+            .unwrap();
         display.write_display().await;
 
         // Animate and revert if needed
