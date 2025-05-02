@@ -7,16 +7,16 @@ on:
     branches:
       - main
     paths:
-      - 'src/**'
-      - 'examples/**'
-      - 'Cargo.toml'
-      - 'Cargo.lock'
+      - "src/**"
+      - "examples/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
 
 jobs:
   publish:
     runs-on: ubuntu-latest
 
-    name: 'publish'
+    name: "publish"
 
     # Reference your environment variables
     environment: cargo
@@ -38,11 +38,14 @@ jobs:
         run: |
           LAST_TAG=$(git describe --tags --abbrev=0)
           if [ "v${{ steps.get_version.outputs.cargo_version }}" == "$LAST_TAG" ]; then
-            echo "Version has not been bumped. Exiting..."
-            exit 1
+            echo "::notice::Version has not been bumped. Skipping publish."
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          else
+            echo "should_publish=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Publish to crates.io
+        if: steps.version_check.outputs.should_publish == 'true'
         run: cargo publish --no-verify
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}

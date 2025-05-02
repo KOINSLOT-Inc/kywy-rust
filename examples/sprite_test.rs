@@ -16,7 +16,7 @@ use embedded_graphics::{pixelcolor::BinaryColor, prelude::*};
 use heapless::Vec;
 use kywy::{
     button_async::{ButtonId, ButtonState},
-    engine::sprite::{Animation, SpriteInstance, SpriteSheet},
+    engine::sprite::{Animation, Rotation, SpriteInstance, SpriteOptions, SpriteSheet},
     kywy_button_async_from, kywy_display_from, kywy_spi_from, kywy_usb_from,
 };
 use panic_probe as _;
@@ -42,40 +42,63 @@ async fn main(spawner: Spawner) {
     let right_trigger: &[(u32, u32)] = &[(0, 2), (1, 2), (2, 2)];
 
     let mut animations: Vec<_, 4> = Vec::new();
-    animations.push(Animation::new(&sheet, idle, true)).unwrap(); // 0
+    animations.push(Animation::new(&sheet, idle, true)).unwrap();
     animations
         .push(Animation::new(&sheet, left_trigger, false))
-        .unwrap(); // 1
+        .unwrap();
     animations
         .push(Animation::new(&sheet, right_trigger, false))
-        .unwrap(); // 2
+        .unwrap();
 
     let mut sprite = SpriteInstance::new(animations, Point::new(40, 40));
+    let mut sprite_options = SpriteOptions {
+        flip_x: false,
+        flip_y: false,
+        rotation: Rotation::None,
+    };
+
+    let mut velocity = Point::zero();
 
     loop {
+        // Capture all button events
+        while let Ok(event) = button_channel.try_receive() {
+            match event.state {
+                ButtonState::Pressed => match event.id {
+                    ButtonId::Left => sprite.trigger(1),
+                    ButtonId::Right => sprite.trigger(2),
+                    ButtonId::DLeft => {
+                        velocity.x = -5;
+                        sprite_options.flip_x = true;
+                    }
+                    ButtonId::DRight => {
+                        velocity.x = 5;
+                        sprite_options.flip_x = false;
+                    }
+                    ButtonId::DUp => velocity.y = -5,
+                    ButtonId::DDown => velocity.y = 5,
+                    _ => {}
+                },
+                ButtonState::Released => match event.id {
+                    ButtonId::DLeft | ButtonId::DRight => velocity.x = 0,
+                    ButtonId::DUp | ButtonId::DDown => velocity.y = 0,
+                    _ => {}
+                },
+            }
+        }
+
+        // Move sprite by velocity
+        sprite.move_by(velocity.x, velocity.y);
+
         // Draw current frame
         let frame = sprite.current().current_frame_sprite().unwrap();
         display.clear(BinaryColor::On).unwrap();
-        frame.draw(&mut display, sprite.position).unwrap();
+        frame
+            .draw(&mut display, sprite.position, sprite_options)
+            .unwrap();
         display.write_display().await;
 
-        // Animate and revert if needed
-        sprite.update(0); // 0 = idle
-
-        // Input handling
-        if let Ok(event) = button_channel.try_receive() {
-            if event.state == ButtonState::Pressed {
-                match event.id {
-                    ButtonId::Left => sprite.trigger(1),
-                    ButtonId::Right => sprite.trigger(2),
-                    ButtonId::DLeft => sprite.move_by(-5, 0),
-                    ButtonId::DRight => sprite.move_by(5, 0),
-                    ButtonId::DUp => sprite.move_by(0, -5),
-                    ButtonId::DDown => sprite.move_by(0, 5),
-                    _ => {}
-                }
-            }
-        }
+        // Update animation
+        sprite.update(0);
 
         Timer::after(Duration::from_millis(100)).await;
     }
