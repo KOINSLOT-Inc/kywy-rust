@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["Animation","Sprite","SpriteInstance","SpriteSheet"]};
+window.SIDEBAR_ITEMS = {"enum":["Rotation"],"struct":["Animation","Sprite","SpriteInstance","SpriteOptions","SpriteSheet"]};
