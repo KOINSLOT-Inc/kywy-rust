@@ -1,0 +1,1 @@
+searchState.loadedDescShard("hello_world", 0, "Hello World example for Kywy display")

@@ -1,0 +1,1 @@
+searchState.loadedDescShard("bricks", 0, "examples/bricks.rs Arkanoid clone for kywy")

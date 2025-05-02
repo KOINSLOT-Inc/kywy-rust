@@ -1,0 +1,1 @@
+searchState.loadedDescShard("sprite_test", 0, "This example demonstrates the use of the <code>Sprite</code> struct …")

@@ -1,0 +1,1 @@
+searchState.loadedDescShard("battery_icon", 0, "")

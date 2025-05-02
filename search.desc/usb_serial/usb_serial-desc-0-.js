@@ -1,0 +1,1 @@
+searchState.loadedDescShard("usb_serial", 0, "examples/usb_serial.rs: Example to test serial …")

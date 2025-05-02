@@ -1,0 +1,1 @@
+searchState.loadedDescShard("snake", 0, "examples/snake.rs Snake game for Kywy")

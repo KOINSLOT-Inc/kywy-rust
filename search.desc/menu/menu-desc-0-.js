@@ -1,0 +1,1 @@
+searchState.loadedDescShard("menu", 0, "examples/menu.rs: Example of building menus with the Kywy …")
