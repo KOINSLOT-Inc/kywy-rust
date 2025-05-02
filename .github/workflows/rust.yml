@@ -177,7 +177,7 @@ jobs:
       # Generate Documentation
       - name: Generate Documentation
         run: |
-          cargo doc --no-deps --target thumbv6m-none-eabi --all-features
+          cargo doc --no-deps --examples --target thumbv6m-none-eabi --all-features
           mkdir -p docs
           cp -r target/thumbv6m-none-eabi/doc/* docs/
 

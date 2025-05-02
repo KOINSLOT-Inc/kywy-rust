@@ -4,7 +4,7 @@
 
 //! examples/display_image.rs
 //! Bitmap Graphic Demo for Kywy display
-//! Make sure BMP is converted to monochrome useing magick "examples/Art Assets/<image file>" -resize 144x168 -monochrome -depth 1 BMP3:"examples/Art Assets/<filename>.bmp"
+//! Make sure BMP is converted to monochrome useing magick "examples/Art Assets/image_file" -resize 144x168 -monochrome -depth 1 BMP3:"examples/Art Assets/filename.bmp"
 
 #![no_std]
 #![no_main]
@@ -32,10 +32,8 @@ async fn main(spawner: embassy_executor::Spawner) {
     display.initialize().await;
     display.enable();
 
-    // Clear screen to white before drawing
     display.clear_buffer(BinaryColor::On);
 
-    // === Load and draw BMP image ===
     static IMAGE_DATA: &[u8] = include_bytes!("../examples/Art Assets/KywyRust.bmp"); //change this line to use a different image
     let bmp = Bmp::from_slice(IMAGE_DATA).unwrap();
 
@@ -44,7 +42,6 @@ async fn main(spawner: embassy_executor::Spawner) {
 
     display.write_display().await;
 
-    // === VCOM maintenance loop ===
     loop {
         display.toggle_vcom().await;
         Timer::after(Duration::from_secs(1)).await;
