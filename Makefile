@@ -15,8 +15,8 @@ PYTHON_DEV_TOOLS := $(CACHE)/.python-dev-tools
 .PHONY: help build flash lint clean check check-release license dependencies $(PYTHON_DEV_TOOLS)
 
 help:
-	@echo "Available targets:"
-	@echo "  make                         Show this help message (default)"
+	@echo "make usage:"
+	@echo "  make help                    Show this help message (default)"
 	@echo "  make build EXAMPLE=name      Build and convert example to UF2 in $(OUTPUT_DIR)/"
 	@echo "  make upload UF2=name.uf2     Flash UF2 file from output directory"
 	@echo "  make lint                    Run license compliance check with reuse"
@@ -41,7 +41,7 @@ upload: flash
 
 flash:
 	@if [ -z "$(UF2)" ]; then \
-		echo "Usage: make upload UF2=example_name.uf2"; \
+		echo "Usage: make flash UF2=example_name.uf2"; \
 		exit 1; \
 	fi
 	@if [ ! -f "$(OUTPUT_DIR)/$(UF2)" ]; then \
