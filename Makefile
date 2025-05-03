@@ -82,7 +82,7 @@ check-release:
 	cargo update
 	cargo clippy --target $(TARGET) --all-features -- -D warnings
 	pipenv run reuse lint
-	cargo publish --dry-run
+	cargo publish --dry-run --target $(TARGET)
 
 license:
 	@if [ -z "$(FILE)" ]; then \
