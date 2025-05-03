@@ -8,7 +8,6 @@
 #![no_main]
 use defmt::*;
 use defmt_rtt as _;
-use embassy_executor;
 use embassy_time::{Duration, Timer};
 use embedded_graphics::{
     mono_font::{MonoTextStyle, ascii::FONT_6X10},

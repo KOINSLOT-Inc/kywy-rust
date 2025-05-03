@@ -11,7 +11,6 @@
 
 use defmt::*;
 use defmt_rtt as _;
-use embassy_executor;
 use embassy_time::{Duration, Timer};
 use embedded_graphics::{image::Image, pixelcolor::BinaryColor, prelude::*};
 use kywy::kywy_display_from;

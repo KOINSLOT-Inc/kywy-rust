@@ -19,8 +19,6 @@ use kywy::button_async::{ButtonEvent, ButtonId, ButtonState};
 use kywy::{kywy_button_async_from, kywy_display_from, kywy_spi_from, kywy_usb_from};
 
 use embassy_executor::Spawner;
-use embassy_rp::peripherals::USB;
-use embassy_rp::usb::InterruptHandler;
 use embassy_time::{Duration, Instant, Timer};
 
 use embedded_graphics::{
@@ -280,7 +278,7 @@ async fn main(spawner: Spawner) {
     let held = ButtonHeldState::default();
 
     loop {
-        let seed = Instant::now().as_ticks() as u64;
+        let seed = Instant::now().as_ticks();
         let mut game = GameState::new(seed);
 
         loop {

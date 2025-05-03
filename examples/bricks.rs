@@ -289,8 +289,8 @@ fn draw_message<D: DrawTarget<Color = BinaryColor>>(display: &mut D, msg: &str) 
     let text_size = text_box.bounding_box().size;
 
     // Compute offset to center it
-    let offset_x = (SCREEN_WIDTH as i32 - text_size.width as i32) / 2;
-    let offset_y = (SCREEN_HEIGHT as i32 - text_size.height as i32) / 2;
+    let offset_x = (SCREEN_WIDTH - text_size.width as i32) / 2;
+    let offset_y = (SCREEN_HEIGHT - text_size.height as i32) / 2;
 
     // Rebuild textbox at new centered position
     let centered_bounds = Rectangle::new(Point::new(offset_x, offset_y), text_size);
@@ -328,12 +328,12 @@ fn create_bricks() -> Vec<Brick, 32> {
     let rows = 4;
     let padding = 2;
     let total_width = cols * (brick_width + padding);
-    let offset_x = (SCREEN_WIDTH - total_width as i32) / 2;
+    let offset_x = (SCREEN_WIDTH - total_width) / 2;
 
     for row in 0..rows {
         for col in 0..cols {
-            let x = offset_x + col as i32 * (brick_width + padding);
-            let y = 4 + row as i32 * (brick_height + padding);
+            let x = offset_x + col * (brick_width + padding);
+            let y = 4 + row * (brick_height + padding);
             let rect = Rectangle::new(
                 Point::new(x, y),
                 Size::new(brick_width as u32, brick_height as u32),
