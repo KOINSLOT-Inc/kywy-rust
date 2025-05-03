@@ -21,8 +21,7 @@ use kywy::{
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
 
-
-//! Uncomment these common dependencies to use them in your program
+// Uncomment these common dependencies to use them in your program
 
 // images, use include_bytes! to include images in your program
 //use embedded_graphics::image::Image;
@@ -39,7 +38,6 @@ use embassy_time::{Duration, Timer};
 
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
-
     // initialize kywy
     let p = embassy_rp::init(Default::default()); //gets peripherals
     kywy_spi_from!(p => spi_bus); //create the spi bus instance, needed for display
@@ -52,5 +50,5 @@ async fn main(spawner: Spawner) {
     display.initialize().await;
     display.enable();
 
-    //! Add your code here
+    // Add your code here
 }
