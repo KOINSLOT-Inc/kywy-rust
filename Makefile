@@ -12,7 +12,7 @@ FLASH_SCRIPT := ./.devcontainer/scripts/upload.py
 CACHE ?= .cache
 PYTHON_DEV_TOOLS := $(CACHE)/.python-dev-tools
 
-.PHONY: help build compile flash install lint clean check check-release license dependencies $(PYTHON_DEV_TOOLS)
+.PHONY: help build compile flash install lint clean check check-release license dependencies update $(PYTHON_DEV_TOOLS)
 
 help:
 	@echo "make usage:"
@@ -23,8 +23,9 @@ help:
 	@echo "  make clean                   Clean build and output directories"
 	@echo "  make check                   Run build checks"
 	@echo "  make check-release           Run build checks for release"
-	@echo "  make license FILE=fileName   Create default license headder"
+	@echo "  make license FILE=fileName   Create default Koinslot license headder"
 	@echo "  make dependencies            Install dependencies"
+	@echo "  make update                  Update repo"
 
 compile:build
 
@@ -85,7 +86,7 @@ check-release:
 
 license:
 	@if [ -z "$(FILE)" ]; then \
-		echo "Usage: make license file=path/to/file.rs"; \
+		echo "Usage: make license FILE=path/to/file.rs"; \
 		exit 1; \
 	fi
 	@start_year=2023; \
@@ -107,12 +108,11 @@ dependencies:
 	@if ! command -v rustup >/dev/null 2>&1; then \
 		echo "Installing rustup..."; \
 		curl https://sh.rustup.rs -sSf | sh -s -- -y; \
+		cargo install cargo-update; \
 	else \
-		echo "✅ rustup already installed."; \
+		echo "✅ rustup already installed. Checking for updates..."; \
+		rustup update; \
 	fi
-
-	@echo "🔧 Ensuring Rust toolchain is up to date..."
-	@rustup update
 
 	@echo "🔧 Checking for elf2uf2-rs..."
 	@if ! command -v elf2uf2-rs >/dev/null 2>&1; then \
@@ -120,9 +120,21 @@ dependencies:
 		cargo install elf2uf2-rs; \
 	else \
 		echo "✅ elf2uf2-rs already available."; \
+		if ! command -v cargo-install-update >/dev/null 2>&1; then \
+			echo "Installing cargo-install-update..."; \
+			cargo install cargo-update; \
+		fi; \
+		echo "🔄 Updating elf2uf2-rs via cargo-install-update..."; \
+		cargo install-update -a elf2uf2-rs; \
 	fi
 
 	@echo "🐍 Setting up Python environment..."
 	@pipenv install --dev "PyQt6>=6.0.0" "pyserial>=3.5" "requests>=2.25.1" "pyudev>=0.22"
+	@pipenv update
 	@mkdir -p $(CACHE)
 	@touch $(PYTHON_DEV_TOOLS)
+
+update:
+	git pull
+	@make dependencies
+	@echo "✅ Everything up to date."
