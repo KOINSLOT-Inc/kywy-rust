@@ -12,13 +12,13 @@ FLASH_SCRIPT := ./.devcontainer/scripts/upload.py
 CACHE ?= .cache
 PYTHON_DEV_TOOLS := $(CACHE)/.python-dev-tools
 
-.PHONY: help build flash lint clean check check-release license dependencies $(PYTHON_DEV_TOOLS)
+.PHONY: help build compile flash lint clean check check-release license dependencies $(PYTHON_DEV_TOOLS)
 
 help:
 	@echo "make usage:"
 	@echo "  make help                    Show this help message (default)"
-	@echo "  make build EXAMPLE=name      Build and convert example to UF2 in $(OUTPUT_DIR)/"
-	@echo "  make upload UF2=name.uf2     Flash UF2 file from output directory"
+	@echo "  make build E=example_name    Build and convert example to UF2 in $(OUTPUT_DIR)/"
+	@echo "  make flash E=name.uf2      Flash UF2 file from output directory"
 	@echo "  make lint                    Run license compliance check with reuse"
 	@echo "  make clean                   Clean build and output directories"
 	@echo "  make check                   Run build checks"
@@ -26,29 +26,31 @@ help:
 	@echo "  make license FILE=fileName   Create default license headder"
 	@echo "  make dependencies            Install dependencies"
 
+compile:build
+
 build:
-	@if [ -z "$(EXAMPLE)" ]; then \
-		echo "ERROR: EXAMPLE not specified. Use EXAMPLE=your_example_name"; \
+	@if [ -z "$(E)" ]; then \
+		echo "ERROR: EXAMPLE not specified. Use E=your_example_name"; \
 		exit 1; \
 	fi
-	cargo build --target $(TARGET) --release --example $(EXAMPLE)
-	cd $(BUILD_DIR) && elf2uf2-rs $(EXAMPLE)
+	cargo build --target $(TARGET) --release --example $(E)
+	cd $(BUILD_DIR) && elf2uf2-rs $(E)
 	mkdir -p $(OUTPUT_DIR)
-	cp $(BUILD_DIR)/$(EXAMPLE).uf2 $(OUTPUT_DIR)/$(EXAMPLE).uf2
-	@echo "[OK] Built and saved: $(OUTPUT_DIR)/$(EXAMPLE).uf2"
+	cp $(BUILD_DIR)/$(E).uf2 $(OUTPUT_DIR)/$(E).uf2
+	@echo "[OK] Built and saved: $(OUTPUT_DIR)/$(E).uf2"
 
 upload: flash
 
 flash:
-	@if [ -z "$(UF2)" ]; then \
-		echo "Usage: make flash UF2=example_name.uf2"; \
+	@if [ -z "$(E)" ]; then \
+		echo "Usage: make flash E=example_name.uf2"; \
 		exit 1; \
 	fi
-	@if [ ! -f "$(OUTPUT_DIR)/$(UF2)" ]; then \
-		echo "ERROR: File not found: $(OUTPUT_DIR)/$(UF2)"; \
+	@if [ ! -f "$(OUTPUT_DIR)/$(E)" ]; then \
+		echo "ERROR: File not found: $(OUTPUT_DIR)/$(E)"; \
 		exit 1; \
 	fi
-	python3 $(FLASH_SCRIPT) file://$(OUTPUT_DIR)/$(UF2)
+	python3 $(FLASH_SCRIPT) file://$(OUTPUT_DIR)/$(E)
 
 clean:
 	rm -rf $(BUILD_DIR) $(OUTPUT_DIR)
