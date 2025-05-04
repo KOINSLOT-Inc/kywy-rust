@@ -18,6 +18,10 @@ echo 'source /workspaces/kywy-rust/.devcontainer/welcome-message.sh' >> ~/.zshrc
 sudo apt-get update
 sudo apt-get install -y pkg-config libudev-dev # rust/cargo dependencies
 
+#install rust target
+rustup target add thumbv6m-none-eabi
+
+#install elf2uf2
 cargo install elf2uf2-rs # elf2uf2 for producing uf2 files
 
 #install python
