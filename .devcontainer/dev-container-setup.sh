@@ -20,7 +20,7 @@ sudo apt-get install -y pkg-config libudev-dev # rust/cargo dependencies
 
 cargo install elf2uf2-rs # elf2uf2 for producing uf2 files
 
-pip install reuse # reuse for easy licensing 
+make dependencies
 
 # Install ImageMagick
 sudo apt-get install -y build-essential pkg-config libx11-dev libxext-dev zlib1g-dev
