@@ -129,20 +129,8 @@ dependencies:
 	fi
 
 	@echo "🐍 Setting up Python environment..."
-	@PYTHON=$$(command -v python3.11 || command -v python3.10 || command -v python3.9 || true); \
-	if [ -z "$$PYTHON" ]; then \
-		if [ -f "/.devcontainer/devcontainer.json" ]; then \
-			echo "⚙️ Installing Python in dev container..."; \
-			apt-get update && apt-get install -y python3 python3-venv python3-dev python3-pip; \
-			PYTHON=$$(command -v python3); \
-		else \
-			echo "❌ Python 3.9+ is required. Please install Python and try again."; \
-			exit 1; \
-		fi; \
-	fi; \
-	echo "✅ Using Python interpreter: $$PYTHON"; \
-	pipenv --python "$$PYTHON" install --dev "PyQt6>=6.0.0" "pyserial>=3.5" "requests>=2.25.1" "pyudev>=0.22"; \
-	pipenv update
+	@pipenv install --dev "PyQt6>=6.0.0" "pyserial>=3.5" "requests>=2.25.1" "pyudev>=0.22" "reuse>=5.0.2"
+	@pipenv update
 
 	@mkdir -p $(CACHE)
 	@touch $(PYTHON_DEV_TOOLS)
