@@ -129,8 +129,9 @@ dependencies:
 	fi
 
 	@echo "🐍 Setting up Python environment..."
-	@pipenv install --dev "PyQt6>=6.0.0" "pyserial>=3.5" "requests>=2.25.1" "pyudev>=0.22"
+	@pipenv install --dev "PyQt6>=6.0.0" "pyserial>=3.5" "requests>=2.25.1" "pyudev>=0.22" "reuse>=5.0.2"
 	@pipenv update
+
 	@mkdir -p $(CACHE)
 	@touch $(PYTHON_DEV_TOOLS)
 
