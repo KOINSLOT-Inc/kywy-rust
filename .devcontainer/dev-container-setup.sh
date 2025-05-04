@@ -20,10 +20,14 @@ sudo apt-get install -y pkg-config libudev-dev # rust/cargo dependencies
 
 cargo install elf2uf2-rs # elf2uf2 for producing uf2 files
 
+#install python
+sudo apt-get install -y python3 python3-pip
+
 make dependencies
 
 # Install ImageMagick
 sudo apt-get install -y build-essential pkg-config libx11-dev libxext-dev zlib1g-dev
+
 
 # Clean up to save space
 sudo apt-get clean
