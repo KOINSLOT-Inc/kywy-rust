@@ -38,12 +38,15 @@ pub async fn usb_monitor_task(spawner: Spawner, usb: USB) {
     let driver = Driver::new(usb, Irqs);
 
     let config = {
-        let mut config = Config::new(0xc0de, 0xcafe);
-        config.manufacturer = Some("Koinslot");
-        config.product = Some("Kywy");
-        config.serial_number = Some("11111");
-        config.max_power = 100;
+        let mut config = Config::new(0x2e8a, 0x00c0); // Arduino VID, Pico PID
+        config.manufacturer = Some("Arduino");
+        config.product = Some("RaspberryPi Pico");
+        config.serial_number = Some("A63064E62CA5324B"); // or None if you want dynamic serial
+        config.max_power = 250; // 500mA / 2, as per USB spec units
         config.max_packet_size_0 = 64;
+        config.device_class = 0xef; // Miscellaneous Device
+        config.device_sub_class = 0x02; // Common Class
+        config.device_protocol = 0x01; // Interface Association Descriptor
         config
     };
 
