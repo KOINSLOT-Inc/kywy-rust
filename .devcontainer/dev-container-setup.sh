@@ -21,7 +21,7 @@ sudo apt-get install -y pkg-config libudev-dev # rust/cargo dependencies
 cargo install elf2uf2-rs # elf2uf2 for producing uf2 files
 
 #install python
-sudo apt-get install -y python3 python3-pip
+sudo apt-get install -y python3 python3-pip pipenv
 
 make dependencies
 
