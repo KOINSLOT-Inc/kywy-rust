@@ -1,0 +1,1 @@
+searchState.loadedDescShard("template", 0, "examples/template.rs Boilerplate for Kywy programs")

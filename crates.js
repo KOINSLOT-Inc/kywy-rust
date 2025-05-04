@@ -1,2 +1,2 @@
-window.ALL_CRATES = ["battery_icon","bricks","button_test_async","button_test_poll","display_image","hello_world","kywy","menu","snake","sprite_test","usb_serial"];
-//{"start":21,"fragment_lengths":[14,9,20,19,16,14,7,7,8,14,13]}
+window.ALL_CRATES = ["battery_icon","bricks","button_test_async","button_test_poll","display_image","hello_world","kywy","menu","snake","sprite_test","template","usb_serial"];
+//{"start":21,"fragment_lengths":[14,9,20,19,16,14,7,7,8,14,11,13]}
