@@ -1,0 +1,15 @@
+# Python package requirements for scripts
+# SPDX-FileCopyrightText: 2023 - 2025 KOINSLOT, Inc.
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# Serial port communication (for upload.py)
+pyserial>=3.5
+
+# HTTP requests for downloading UF2 files (for upload.py)
+requests>=2.25.1
+
+# Linux device management (for upload.py)
+pyudev>=0.22
+
+# License compliance tool (for reuse-annotate and lint)
+reuse>=5.0.2
