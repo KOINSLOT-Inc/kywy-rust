@@ -57,7 +57,7 @@ jobs:
           cargo build --release --example hello_world --target thumbv6m-none-eabi
           cargo build --release --example menu --target thumbv6m-none-eabi
           cargo build --release --example button_test_async --target thumbv6m-none-eabi
-          cargo build --release --example button_test_poll --target thumbv6m-none-eabi --features button-poll --no-default-features
+          cargo build --release --example button_test_poll --target thumbv6m-none-eabi 
           cargo build --release --example snake --target thumbv6m-none-eabi
           cargo build --release --example bricks --target thumbv6m-none-eabi
           cargo build --release --example sprite_test --target thumbv6m-none-eabi
