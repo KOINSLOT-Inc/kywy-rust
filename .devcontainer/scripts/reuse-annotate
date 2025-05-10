@@ -4,12 +4,37 @@
 
 YEAR=$(date +%Y)
 AUTHOR="KOINSLOT Inc."
+SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+REQUIREMENTS_FILE="$SCRIPT_DIR/requirements.txt"
 
-reuse lint --json |
+# Function to run reuse command
+run_reuse() {
+    if command -v pipenv >/dev/null 2>&1; then
+        pipenv run "$@"
+    elif command -v python3 >/dev/null 2>&1; then
+        if ! python3 -c "import reuse" 2>/dev/null; then
+            echo "→ Installing required dependencies..."
+            pip3 install -r "$REQUIREMENTS_FILE"
+        fi
+        python3 -m "$@"
+    elif command -v python >/dev/null 2>&1; then
+        if ! python -c "import reuse" 2>/dev/null; then
+            echo "→ Installing required dependencies..."
+            pip install -r "$REQUIREMENTS_FILE"
+        fi
+        python -m "$@"
+    else
+        echo "Error: Neither pipenv nor python is available. Please install Python."
+        exit 1
+    fi
+}
+
+# Run reuse commands with the appropriate wrapper
+run_reuse reuse lint --json |
 jq -r '.non_compliant.missing_licensing_info[]' |
 while read -r file; do
   echo "Fixing $file"
-  reuse annotate \
+  run_reuse reuse annotate \
     --license GPL-3.0-or-later \
     --copyright "$YEAR $AUTHOR" \
     "$file"

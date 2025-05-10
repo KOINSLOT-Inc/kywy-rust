@@ -66,7 +66,32 @@ flash:
 		echo "→ 🔧 Building..."; \
 		$(MAKE) build E=$(E); \
 	fi
-	pipenv run python $(FLASH_SCRIPT) file://$(OUTPUT_DIR)/$(E).uf2
+	@if command -v pipenv >/dev/null 2>&1; then \
+		echo "Using pipenv..."; \
+		pipenv run python $(FLASH_SCRIPT) file://$(OUTPUT_DIR)/$(E).uf2; \
+	else \
+		echo "Pipenv not found, trying Python directly..."; \
+		if command -v python3 >/dev/null 2>&1; then \
+			echo "→ Using python3"; \
+			PIP_CMD="pip3"; \
+			if ! python3 -c "import serial, requests, pyudev" 2>/dev/null; then \
+				echo "→ Installing required dependencies..."; \
+				$$PIP_CMD install -r $(dir $(FLASH_SCRIPT))requirements.txt; \
+			fi; \
+			python3 $(FLASH_SCRIPT) file://$(OUTPUT_DIR)/$(E).uf2; \
+		elif command -v python >/dev/null 2>&1; then \
+			echo "→ Using python"; \
+			PIP_CMD="pip"; \
+			if ! python -c "import serial, requests, pyudev" 2>/dev/null; then \
+				echo "→ Installing required dependencies..."; \
+				$$PIP_CMD install -r $(dir $(FLASH_SCRIPT))requirements.txt; \
+			fi; \
+			python $(FLASH_SCRIPT) file://$(OUTPUT_DIR)/$(E).uf2; \
+		else \
+			echo "Error: Neither pipenv nor python is available. Please install Python."; \
+			exit 1; \
+		fi; \
+	fi
 
 clean:
 	rm -rf $(BUILD_DIR) $(OUTPUT_DIR)
@@ -76,12 +101,12 @@ check:
 	cargo clippy --target $(TARGET) --all-features -- --no-deps
 	@echo "📦 Verifying all examples build..."
 	$(MAKE) build E=all
-	pipenv run reuse lint
+	$(MAKE) lint
 
 check-release:
 	cargo update
 	cargo clippy --target $(TARGET) --all-features -- -D warnings
-	pipenv run reuse lint
+	$(MAKE) lint
 	cargo publish --dry-run --target $(TARGET)
 
 license:
@@ -91,17 +116,67 @@ license:
 	fi
 	@start_year=2023; \
 	current_year=$$(date +%Y); \
-	reuse annotate --license GPL-3.0-or-later \
-		--copyright "$$start_year - $$current_year KOINSLOT, Inc." \
-		$(FILE)
+	@if command -v pipenv >/dev/null 2>&1; then \
+		pipenv run reuse annotate --license GPL-3.0-or-later \
+			--copyright "$$start_year - $$current_year KOINSLOT, Inc." \
+			$(FILE); \
+	else \
+		if command -v python3 >/dev/null 2>&1; then \
+			PIP_CMD="pip3"; \
+			if ! python3 -c "import reuse" 2>/dev/null; then \
+				echo "→ Installing required dependencies..."; \
+				$$PIP_CMD install -r $(dir $(FLASH_SCRIPT))requirements.txt; \
+			fi; \
+			python3 -m reuse annotate --license GPL-3.0-or-later \
+				--copyright "$$start_year - $$current_year KOINSLOT, Inc." \
+				$(FILE); \
+		elif command -v python >/dev/null 2>&1; then \
+			PIP_CMD="pip"; \
+			if ! python -c "import reuse" 2>/dev/null; then \
+				echo "→ Installing required dependencies..."; \
+				$$PIP_CMD install -r $(dir $(FLASH_SCRIPT))requirements.txt; \
+			fi; \
+			python -m reuse annotate --license GPL-3.0-or-later \
+				--copyright "$$start_year - $$current_year KOINSLOT, Inc." \
+				$(FILE); \
+		else \
+			echo "Error: Neither pipenv nor python is available. Please install Python."; \
+			exit 1; \
+		fi; \
+	fi
 
 $(PYTHON_DEV_TOOLS):
 	pipenv install --dev
 	@mkdir -p $(CACHE)
 	@touch $(PYTHON_DEV_TOOLS)
 
-lint: $(PYTHON_DEV_TOOLS)
-	pipenv run reuse lint
+lint:
+	@if command -v pipenv >/dev/null 2>&1; then \
+		echo "Using pipenv..."; \
+		pipenv run reuse lint; \
+	else \
+		echo "Pipenv not found, trying Python directly..."; \
+		if command -v python3 >/dev/null 2>&1; then \
+			echo "→ Using python3"; \
+			PIP_CMD="pip3"; \
+			if ! python3 -c "import reuse" 2>/dev/null; then \
+				echo "→ Installing required dependencies..."; \
+				$$PIP_CMD install -r $(dir $(FLASH_SCRIPT))requirements.txt; \
+			fi; \
+			python3 -m reuse lint; \
+		elif command -v python >/dev/null 2>&1; then \
+			echo "→ Using python"; \
+			PIP_CMD="pip"; \
+			if ! python -c "import reuse" 2>/dev/null; then \
+				echo "→ Installing required dependencies..."; \
+				$$PIP_CMD install -r $(dir $(FLASH_SCRIPT))requirements.txt; \
+			fi; \
+			python -m reuse lint; \
+		else \
+			echo "Error: Neither pipenv nor python is available. Please install Python."; \
+			exit 1; \
+		fi; \
+	fi
 
 dependencies:
 	@echo "🔧 Checking for Rust toolchain..."
