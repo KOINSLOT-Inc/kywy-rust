@@ -4,7 +4,7 @@
 
 [package]
 name = "kywy"
-version = "0.3.7"
+version = "0.4.0"
 edition = "2024"
 authors = ["Koinslot_INC"]
 description = "Kywy is a simple and easy-to-use library for building games on the Kywy Device"
@@ -86,8 +86,3 @@ lto = true
 codegen-units = 1
 opt-level = "z"   # Optimize for size
 
-[features]
-button-async = []
-button-poll = []
-
-default = ["button-async"]
