@@ -61,7 +61,7 @@ embassy-sync = { version = "0.6.0", features = ["defmt"] }
 embassy-usb = { version = "0.4.0", default-features = false, features = [
     "defmt",
 ] }
-portable-atomic = { version = "1.5.1", features = ["critical-section"] }
+portable-atomic = { version = "1.11.1", features = ["critical-section"] }
 static_cell = { version = "2.1.0" }
 log = "0.4"
 embassy-usb-logger = "0.4.0"
