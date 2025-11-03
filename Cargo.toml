@@ -62,7 +62,7 @@ embassy-usb = { version = "0.4.0", default-features = false, features = [
     "defmt",
 ] }
 portable-atomic = { version = "1.11.1", features = ["critical-section"] }
-static_cell = { version = "2.1.0" }
+static_cell = { version = "2.1.1" }
 log = "0.4"
 embassy-usb-logger = "0.4.0"
 
